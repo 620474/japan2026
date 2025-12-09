@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Япония 2026: Mobile App Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #fcfbf9;
+            color: #292524;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+        
+        h1, h2, h3, .serif-font {
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Utils */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Badge Styles */
+        .food-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-history { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; }
+        .badge-local { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-sweet { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge-tech { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+        /* Mobile specific adjustments */
+        .mobile-safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .anthro-note {
+            border-left: 3px solid #d6d3d1;
+            padding-left: 12px;
+            font-style: italic;
+            color: #57534e;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen pb-20 md:pb-0">
+
+    <!-- Header (Compact on Mobile) -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm safe-top">
+        <div class="max-w-6xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 md:w-9 md:h-9 bg-stone-800 rounded flex items-center justify-center text-white font-serif font-bold text-lg md:text-xl">食</div>
+                <div>
+                    <div class="font-bold text-base md:text-lg leading-tight text-stone-900">Japan 2026</div>
+                    <div class="text-[10px] md:text-xs text-stone-500 font-medium hidden md:block">Гастрономическая Антропология</div>
+                </div>
+            </div>
+            
+            <!-- Desktop Nav (Hidden on Mobile) -->
+            <nav class="hidden md:flex gap-2" id="desktop-nav"></nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8">
+        <div id="app-view" class="fade-in"></div>
+    </main>
+
+    <!-- Mobile Bottom Navigation (Visible ONLY on Mobile) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-stone-200 z-50 mobile-safe-bottom shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-center h-16" id="mobile-bottom-nav">
+            <!-- Injected by JS -->
+        </div>
+    </nav>
+
+    <!-- LOGIC & DATA -->
+    <script>
+        // --- DATA ---
+        // (Same data as before)
+        const itinerary = [
+            { day: "15.04", date: "Ср", city: "Осака", title: "Столица Даси", desc: "Прилет KIX 11:45. Культура Kuidaore.", food_ref: "osaka" },
+            { day: "16.04", date: "Чт", city: "Осака", title: "История Удона", desc: "Родина Кицунэ Удона. Умеда.", food_ref: "osaka" },
+            { day: "17.04", date: "Пт", city: "Киото", title: "Вода и Тофу", desc: "Философия 'Симацу'. Обанзай.", food_ref: "kyoto" },
+            { day: "18.04", date: "Сб", city: "Кобе", title: "Западные Влияния", desc: "Кафе в церкви. Альтернатива мясу.", food_ref: "kobe" },
+            { day: "19.04", date: "Вс", city: "Ономити", title: "Портовая Ностальгия", desc: "⚡ Старт JR Pass. Рамен с жиром.", food_ref: "onomichi" },
+            { day: "20.04", date: "Пн", city: "Имабари", title: "Скорость и Железо", desc: "Курица на утюге. Б-Гурмэ.", food_ref: "imabari" },
+            { day: "21.04", date: "Вт", city: "Хиросима", title: "Слои Вкуса", desc: "Музей Мира. Окономияки.", food_ref: "hiroshima" },
+            { day: "22.04", date: "Ср", city: "Миядзима", title: "Остров Богов", desc: "Паром. Угорь Анаго. Рёкан.", food_ref: "miyajima" },
+            { day: "23.04", date: "Чт", city: "Симоносеки", title: "История Фугу", desc: "Переезд. Соба на черепице.", food_ref: "shimonoseki" },
+            { day: "24.04", date: "Пт", city: "Осака", title: "Возврат", desc: "Рынок Карато. Shinkansen.", food_ref: "shimonoseki" },
+            { day: "25.04", date: "Сб", city: "Осака", title: "Шопинг I", desc: "Финальный шопинг.", food_ref: "osaka" },
+            { day: "26.04", date: "Вс", city: "Осака", title: "Шопинг II", desc: "Сувениры. Упаковка.", food_ref: "osaka" },
+            { day: "27.04", date: "Пн", city: "Вылет", title: "Домой", desc: "Прощание с Японией.", food_ref: "osaka" }
+        ];
+
+        const foodIntel = [
+            {
+                id: "osaka",
+                city: "Осака",
+                tagline: "Культура 'Kuidaore'",
+                desc: "Осака — это культура бульона (даси) из комбу.",
+                places: [
+                    { name: "Usamitei Matsubaya", type: "История", badge: "badge-history", dish: "Ojiya Udon", price: "¥820", why: "Место рождения Кицунэ Удона (1893).", anthro: "Прагматизм торговцев: рис и лапша в одной миске." },
+                    { name: "Guenpin Fugu", type: "Техно", badge: "badge-tech", dish: "Tecchiri (Набэ)", price: "¥5,000", why: "Выдержанная фугу.", anthro: "Технология 'aging' усиливает умами." },
+                    { name: "Takoyaki Wanaka", type: "Стрит", badge: "badge-local", dish: "Такояки", price: "¥600", why: "Эталонное тесто.", anthro: "Мягкие внутри — наследие культуры супов." }
+                ]
+            },
+            {
+                id: "kyoto",
+                city: "Киото",
+                tagline: "Философия 'Симацу'",
+                desc: "Кухня мягкой воды и буддийских традиций.",
+                places: [
+                    { name: "Miyako Yasai Kamo", type: "Обанзай", badge: "badge-local", dish: "Овощной буфет", price: "¥1,100", why: "Доступ к Kyo-yasai.", anthro: "Высокая домашняя кухня. Вкус овощей без специй." },
+                    { name: "Nanzenji Junsei", type: "Юдофу", badge: "badge-history", dish: "Горячий тофу", price: "¥3,500", why: "Опыт дзен-монахов.", anthro: "Тофу просто греется в воде с комбу." }
+                ]
+            },
+            {
+                id: "kobe",
+                city: "Кобе",
+                tagline: "Портовый Фьюжн",
+                desc: "Открытый порт: хлеб, кофе и йошоку.",
+                places: [
+                    { name: "Freundlieb", type: "Архитектура", badge: "badge-history", dish: "Roast Beef Sandwich", price: "¥1,800", why: "Кафе в церкви.", anthro: "Памятник немецкому влиянию на хлеб Японии." },
+                    { name: "Mokkosu", type: "Soul Food", badge: "badge-local", dish: "Тонкоцу-Сёю", price: "¥1,000", why: "Выбор местных.", anthro: "Гора свинины. Едят с маринованным дайконом." }
+                ]
+            },
+            {
+                id: "onomichi",
+                city: "Ономити",
+                tagline: "Еда докеров",
+                desc: "Рамен с жиром для энергии рабочих.",
+                places: [
+                    { name: "Ichibankan", type: "Рамен", badge: "badge-local", dish: "Kakuni Ramen", price: "¥1,200", why: "Эволюция классики.", anthro: "Бульон из сардин + огромный кусок свинины." },
+                    { name: "Oyatsu to Yamaneko", type: "Десерт", badge: "badge-sweet", dish: "Пудинг", price: "¥450", why: "Локализация десерта.", anthro: "Лимонный сироп превращает пудинг в чизкейк." }
+                ]
+            },
+            {
+                id: "imabari",
+                city: "Имабари",
+                tagline: "Нетерпеливость",
+                desc: "Готовка на 'утюге' ради скорости.",
+                places: [
+                    { name: "Yakitori Toribayashi", type: "Teppan", badge: "badge-tech", dish: "Kawa (Кожа)", price: "¥500", why: "Жарка прессом.", anthro: "Без шампуров, на железной плите. Быстро и хрустяще." },
+                    { name: "Hakurakuten", type: "B-Gourmet", badge: "badge-local", dish: "Якибута Тамаго", price: "¥900", why: "Углеводная бомба.", anthro: "Рис + Свинина + Яйца. Смешивать ложкой." }
+                ]
+            },
+            {
+                id: "hiroshima",
+                city: "Хиросима",
+                tagline: "Слои",
+                desc: "Слои ингредиентов, а не смешивание.",
+                places: [
+                    { name: "Hassho", type: "Культ", badge: "badge-local", dish: "Окономияки", price: "¥1,300", why: "Двойной желток.", anthro: "Готовят 20 мин, чтобы лапша стала хрустящей." },
+                    { name: "Bakudan-ya", type: "Острота", badge: "badge-tech", dish: "Цукэмэн", price: "¥1,100", why: "Холодная и острая.", anthro: "Овощи балансируют перечный удар." }
+                ]
+            },
+            {
+                id: "miyajima",
+                city: "Миядзима",
+                tagline: "Дары моря",
+                desc: "Еда как часть паломничества.",
+                places: [
+                    { name: "Anagomeshi Ueno", type: "Мишлен", badge: "badge-history", dish: "Анаго-меши", price: "¥2,500", why: "Морской угорь.", anthro: "Менее жирный, чем речной. Блюдо с 1901 года." },
+                    { name: "Momijido", type: "Снэк", badge: "badge-sweet", dish: "Agemomiji", price: "¥200", why: "Жареный десерт.", anthro: "Пирожок в кляре во фритюре. Новый вкус старой формы." }
+                ]
+            },
+            {
+                id: "shimonoseki",
+                city: "Симоносеки",
+                tagline: "Серьезность",
+                desc: "Столица Фугу и исторические договоры.",
+                places: [
+                    { name: "Kawara Soba Takase", type: "Легенда", badge: "badge-history", dish: "Kawara Soba", price: "¥1,300", why: "Соба на черепице.", anthro: "Вдохновлено солдатами войны 1877 года." },
+                    { name: "Shunpanro", type: "Люкс", badge: "badge-history", dish: "Fugu Kaiseki", price: "¥6,000+", why: "Высокая кухня.", anthro: "Нарезка 'хризантема' — вершина мастерства." }
+                ]
+            }
+        ];
+
+        const logistics = [
+            { title: "JR Pass Sanyo-San'in", desc: "Экономия > $100. Активация 19.04. Покрывает Осака-Хиросима-Хаката.", icon: "🎫" },
+            { title: "Yamato Transport", desc: "19.04 Осака -> Хиросима. 23.04 Хиросима -> Осака.", icon: "🚚" },
+            { title: "Бронирование", desc: "Рёкан (Миядзима) и Hassho (Хиросима) требуют планирования.", icon: "📅" }
+        ];
+
+        // --- APP STATE ---
+        let view = 'itinerary';
+        let selectedCityId = 'osaka';
+
+        // --- RENDERERS ---
+        function init() {
+            renderDesktopNav();
+            renderMobileNav();
+            renderView();
+        }
+
+        // DESKTOP NAV (Top Bar)
+        function renderDesktopNav() {
+            const tabs = [
+                { id: 'itinerary', label: 'Маршрут' },
+                { id: 'food', label: 'Гид по Еде' },
+                { id: 'logistics', label: 'Логистика' }
+            ];
+            const html = tabs.map(t => `
+                <button onclick="switchView('${t.id}')" class="px-4 py-2 text-sm font-medium rounded-md transition-colors ${view === t.id ? 'bg-stone-100 text-red-800' : 'text-stone-600 hover:bg-stone-50'}">
+                    ${t.label}
+                </button>
+            `).join('');
+            document.getElementById('desktop-nav').innerHTML = html;
+        }
+
+        // MOBILE NAV (Bottom Bar)
+        function renderMobileNav() {
+            const tabs = [
+                { id: 'itinerary', label: 'Маршрут', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' },
+                { id: 'food', label: 'Еда', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />' },
+                { id: 'logistics', label: 'Инфо', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />' }
+            ];
+            
+            const html = tabs.map(t => `
+                <button onclick="switchView('${t.id}')" class="flex flex-col items-center justify-center w-full h-full space-y-1 ${view === t.id ? 'text-red-700' : 'text-stone-400'}">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">${t.icon}</svg>
+                    <span class="text-[10px] font-medium">${t.label}</span>
+                </button>
+            `).join('');
+            document.getElementById('mobile-bottom-nav').innerHTML = html;
+        }
+
+        function switchView(newView) {
+            view = newView;
+            renderDesktopNav();
+            renderMobileNav();
+            renderView();
+            window.scrollTo(0,0);
+        }
+
+        function renderView() {
+            const container = document.getElementById('app-view');
+            container.innerHTML = '';
+            
+            if (view === 'itinerary') renderItinerary(container);
+            if (view === 'food') renderFood(container);
+            if (view === 'logistics') renderLogistics(container);
+        }
+
+        // --- VIEWS ---
+
+        function renderItinerary(container) {
+            let html = `<div class="space-y-4">`;
+            
+            itinerary.forEach((item, index) => {
+                const isSpecial = item.title.includes("JR Pass");
+                html += `
+                    <div class="flex gap-3 relative">
+                        <!-- Timeline Line -->
+                        <div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] bg-stone-200 z-0 ${index === itinerary.length - 1 ? 'hidden' : ''}"></div>
+                        
+                        <!-- Date Bubble -->
+                        <div class="flex-shrink-0 z-10 text-center">
+                            <div class="w-10 h-10 rounded-full bg-white border-2 ${isSpecial ? 'border-yellow-400' : 'border-stone-300'} flex items-center justify-center shadow-sm">
+                                <div class="text-[10px] font-bold text-stone-600 leading-none">
+                                    <div class="uppercase text-[8px] text-stone-400">${item.date}</div>
+                                    ${item.day.split('.')[0]}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card -->
+                        <div class="flex-grow bg-white rounded-lg border border-stone-200 p-3 md:p-4 shadow-sm active:scale-[0.99] transition-transform">
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="font-bold text-stone-900 text-sm md:text-base">${item.title}</h3>
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-stone-100 text-stone-500">${item.city}</span>
+                            </div>
+                            <p class="text-stone-600 text-xs md:text-sm mb-3 leading-relaxed">${item.desc}</p>
+                            
+                            <button onclick="jumpToFood('${item.food_ref}')" class="w-full flex items-center justify-between bg-stone-50 border border-stone-100 rounded px-2 py-1.5 hover:bg-red-50 hover:border-red-100 transition-colors">
+                                <span class="text-[10px] font-bold text-red-800 flex items-center gap-1">
+                                    🍽️ Вкусно
+                                </span>
+                                <span class="text-[10px] text-stone-400">Перейти &rarr;</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function renderFood(container) {
+            // Horizontal Scroll for Mobile, Sidebar for Desktop
+            let html = `
+                <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+                    
+                    <!-- City Selector (Sticky Top on Mobile) -->
+                    <div class="sticky top-14 md:top-20 z-30 bg-[#fcfbf9] pt-2 pb-2 md:pb-0 md:pt-0 md:w-1/4">
+                        <!-- Mobile Horizontal Scroll -->
+                        <div class="md:hidden flex overflow-x-auto hide-scroll gap-2 pb-1">
+                            ${foodIntel.map(city => `
+                                <button onclick="selectCity('${city.id}')" 
+                                    class="flex-shrink-0 px-4 py-2 rounded-full border text-xs font-bold whitespace-nowrap transition-all
+                                    ${selectedCityId === city.id 
+                                        ? 'bg-stone-800 text-white border-stone-800 shadow-md' 
+                                        : 'bg-white text-stone-600 border-stone-200'}">
+                                    ${city.city}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <!-- Desktop Vertical List -->
+                        <div class="hidden md:flex flex-col gap-2">
+                             <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-2 px-1">Регионы</h2>
+                            ${foodIntel.map(city => `
+                                <button onclick="selectCity('${city.id}')" 
+                                    class="text-left px-4 py-3 rounded-lg border transition-all
+                                    ${selectedCityId === city.id 
+                                        ? 'bg-stone-800 text-white border-stone-800 shadow-md' 
+                                        : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'}">
+                                    <span class="font-bold text-sm">${city.city}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Details Area -->
+                    <div class="w-full md:w-3/4">
+                        ${renderCityFoodDetails(selectedCityId)}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function renderCityFoodDetails(id) {
+            const city = foodIntel.find(c => c.id === id);
+            return `
+                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in pb-4">
+                    <!-- Hero Header -->
+                    <div class="bg-stone-100 p-4 md:p-6 border-b border-stone-200">
+                        <div class="flex items-baseline justify-between">
+                            <h2 class="text-2xl md:text-3xl font-serif font-bold text-stone-900">${city.city}</h2>
+                            <span class="text-4xl opacity-20">🍜</span>
+                        </div>
+                        <p class="text-stone-600 font-medium italic text-xs md:text-sm mt-1">"${city.tagline}"</p>
+                        <p class="text-stone-500 text-xs mt-2 leading-relaxed hidden md:block">${city.desc}</p>
+                    </div>
+
+                    <!-- Cards -->
+                    <div class="divide-y divide-stone-100">
+                        ${city.places.map(place => `
+                            <div class="p-4 md:p-6 active:bg-stone-50 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <h3 class="font-bold text-base text-stone-900 leading-tight">
+                                            ${place.name}
+                                        </h3>
+                                        <div class="text-xs font-bold text-stone-500 mt-1">${place.dish} <span class="text-stone-300">|</span> <span class="font-mono text-stone-700">${place.price}</span></div>
+                                    </div>
+                                    <span class="food-badge ${getBadgeStyle(place.badge)} ml-2">${place.type}</span>
+                                </div>
+                                
+                                <div class="mt-2 space-y-2">
+                                    <p class="text-stone-800 text-xs leading-relaxed"><strong>Why:</strong> ${place.why}</p>
+                                    <div class="bg-stone-50 p-2 rounded text-[11px] text-stone-600 italic border-l-2 border-stone-300">
+                                        "${place.anthro}"
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLogistics(container) {
+            container.innerHTML = `
+                <div class="space-y-4 max-w-xl mx-auto">
+                    ${logistics.map(l => `
+                        <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm flex gap-4 items-start">
+                            <div class="bg-stone-100 w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">
+                                ${l.icon}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-stone-900 text-sm md:text-base">${l.title}</h3>
+                                <p class="text-stone-600 text-xs md:text-sm mt-1 leading-relaxed">${l.desc}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="mt-8 text-center px-4">
+                        <p class="text-xs text-stone-400">
+                            Совет: Сделайте скриншот этой страницы,<br>чтобы иметь доступ офлайн.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- HELPERS ---
+        function selectCity(id) {
+            selectedCityId = id;
+            renderView(); // Re-render to update UI
+        }
+
+        function jumpToFood(cityId) {
+            selectedCityId = cityId;
+            switchView('food');
+        }
+
+        function getBadgeStyle(badgeClass) {
+            return badgeClass;
+        }
+
+        // --- INIT ---
+        init();
+
+    </script>
+</body>
+</html>
