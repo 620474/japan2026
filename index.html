@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Япония 2026: Final Cut</title>
+    <title>Япония 2026: Trail & Ride</title>
     
     <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,14 +30,13 @@
         .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         .badge-base { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; } 
         .badge-trip { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .badge-opt { background: #fdf4ff; color: #86198f; border: 1px solid #f0abfc; } 
+        .badge-time { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; margin-right: 6px; }
         
-        /* Sport Badges */
-        .badge-gravel { background: #451a03; color: #fed7aa; border: 1px solid #9a3412; } 
-        .badge-road { background: #172554; color: #bfdbfe; border: 1px solid #1d4ed8; }
-        .badge-casual { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
-        .badge-hardcore { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
-
+        /* Categories */
+        .badge-trail { background: #3f6212; color: #d9f99d; border: 1px solid #84cc16; } /* HIKING */
+        .badge-hardcore { background: #450a0a; color: #fecaca; border: 1px solid #991b1b; } /* HARD CYCLING */
+        .badge-relax { background: #f0f9ff; color: #0c4a6e; border: 1px solid #bae6fd; }
+        
         .segmented-control { background: #e7e5e4; padding: 4px; border-radius: 8px; display: flex; }
         .segment-btn { flex: 1; text-align: center; padding: 8px 0; font-size: 13px; font-weight: 600; border-radius: 6px; color: #57534e; transition: all 0.2s; }
         .segment-active { background: white; color: #1c1917; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -48,10 +47,10 @@
     <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm safe-top">
         <div class="max-w-6xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-stone-900 rounded flex items-center justify-center text-white font-serif font-bold text-lg">FC</div>
+                <div class="w-8 h-8 bg-green-900 rounded flex items-center justify-center text-white font-serif font-bold text-lg">TR</div>
                 <div>
                     <div class="font-bold text-base md:text-lg leading-tight text-stone-900">Japan 2026</div>
-                    <div class="text-[10px] md:text-xs text-stone-500 font-medium">Final Cut Edition</div>
+                    <div class="text-[10px] md:text-xs text-stone-500 font-medium">Trail & Ride Edition</div>
                 </div>
             </div>
             <nav class="hidden md:flex gap-1" id="desktop-nav"></nav>
@@ -68,104 +67,103 @@
 
     <script>
         // ============================================
-        // 🔑 API КЛЮЧ
+        // 🔑 API KEY
         // ============================================
         const YANDEX_API_KEY = '5912b65b-5a13-482f-bf3c-6a11282b5100'; 
         
         // ================= DATA =================
 
         const itinerary = [
-            // PHASE 1: OSAKA (3 nights)
-            { day: "15.04", date: "Пн", city: "Осака", title: "Прибытие", time: "День", type: "base", desc: "База: Осака (3 ночи). Сборка байков. Дотонбори.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            { day: "16.04", date: "Вт", city: "Авадзи", title: "Awaichi", time: "06:00", type: "trip", desc: "🅰️ Canyon: Полный круг 150км (10ч).<br>🅱️ Группа: Сев. берег / Прогулка.", food_ref: "kobe", sight_ref: "velo", hotel_ref: "osaka" },
-            { day: "17.04", date: "Ср", city: "Нара", title: "Route 308", time: "06:00", type: "trip", desc: "🅰️ Canyon: Перевал 31°. Хардкор.<br>🅱️ Группа: Поезд в Нару + Парк.", food_ref: "nara", sight_ref: "velo", hotel_ref: "osaka" },
+            // BLOCK 1: OSAKA (3 nights)
+            { day: "15.04", date: "Пн", city: "Осака", title: "Адаптация", time: "День", type: "base", desc: "База: Осака (3 ночи). Сборка. Дотонбори.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
+            { day: "16.04", date: "Вт", city: "Авадзи", title: "Awaichi", time: "06:00", type: "trip", desc: "🅰️ Canyon: 150км круг (Хардкор!).<br>🅱️ Fix: Север острова / Парк.", food_ref: "kobe", sight_ref: "velo", hotel_ref: "osaka" },
+            { day: "17.04", date: "Ср", city: "Нара", title: "Route 308", time: "07:00", type: "trip", desc: "🅰️ Canyon: Перевал 37% (Бетон).<br>🅱️ Fix: Поезд в Нару + Пешие тропы Икома.", food_ref: "nara", sight_ref: "velo", hotel_ref: "osaka" },
             
-            // PHASE 2: KYOTO (3 nights)
-            { day: "18.04", date: "Чт", city: "Киото", title: "Переезд", time: "Утро", type: "base", desc: "Поезд в Киото. База: Киото. Прогулка по Гиону.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
-            { day: "19.04", date: "Пт", city: "Киото", title: "Культура", time: "День", type: "base", desc: "Храмы, Сады, Релакс (после Авадзи).", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
-            { day: "20.04", date: "Сб", city: "Арасияма", title: "Бамбук", time: "07:00", type: "base", desc: "🅰️ Canyon: Велодорожка вдоль реки Кацура.<br>🅱️ Группа: Прогулка (рано утром!).", food_ref: "kyoto", sight_ref: "velo", hotel_ref: "kyoto" },
+            // BLOCK 2: KYOTO (4 nights)
+            { day: "18.04", date: "Чт", city: "Киото", title: "Переезд", time: "Утро", type: "base", desc: "Поезд (30 мин). Релакс после вело. Гион.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
+            { day: "19.04", date: "Пт", city: "Киото", title: "Fushimi Trail", time: "06:00", type: "base", desc: "Пеший трейл через гору Инари (уход от толпы).", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
+            { day: "20.04", date: "Сб", city: "Арасияма", title: "Релакс", time: "Утро", type: "base", desc: "Ранняя прогулка. Река Кацура. Кофе.", food_ref: "kyoto", sight_ref: "velo", hotel_ref: "kyoto" },
+            { day: "21.04", date: "Вс", city: "Киото", title: "Буфер", time: "Flex", type: "base", desc: "Шопинг, погода или доп. храмы.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
+
+            // BLOCK 3: HIROSHIMA (2 nights)
+            { day: "22.04", date: "Пн", city: "Хиросима", title: "Переезд", time: "Утро", type: "base", desc: "Синкансэн. Парк Мира. Окономияки.", food_ref: "hiroshima", sight_ref: "hiroshima", hotel_ref: "hiroshima" },
+            { day: "23.04", date: "Вт", city: "Миядзима", title: "Mt. Misen", time: "День", type: "trip", desc: "Пеший подъем (Momijidani trail). 535м. Канатка вниз.", food_ref: "miyajima", sight_ref: "miyajima", hotel_ref: "hiroshima" },
             
-            // PHASE 3: WEST (2 nights in Himeji, 2 in Hiroshima) -> ADJUSTED TO TEXT
-            { day: "21.04", date: "Вс", city: "Химедзи", title: "Замок", time: "Утро", type: "base", desc: "Переезд в Химедзи. Замок Белой Цапли.", food_ref: "himeji", sight_ref: "himeji", hotel_ref: "himeji" },
-            { day: "22.04", date: "Пн", city: "Химедзи", title: "Побережье", time: "Утро", type: "base", desc: "Вело по Harima Seaside или прогулка.", food_ref: "himeji", sight_ref: "himeji", hotel_ref: "himeji" },
+            // BLOCK 4: KITAKYUSHU (2 nights)
+            { day: "24.04", date: "Ср", city: "Кокура", title: "Кюсю", time: "Утро", type: "base", desc: "Синкансэн в Китакюсю. Замок Кокура. Рынок Танга.", food_ref: "kokura", sight_ref: "kokura", hotel_ref: "kokura" },
+            { day: "25.04", date: "Чт", city: "Саракура", title: "Night View", time: "Вечер", type: "trip", desc: "Гора Саракура. Панорама 'Миллиард долларов'.", food_ref: "kokura", sight_ref: "kokura", hotel_ref: "kokura" },
             
-            { day: "23.04", date: "Вт", city: "Хиросима", title: "История", time: "Утро", type: "base", desc: "Переезд. Парк Мира. База: Хиросима.", food_ref: "hiroshima", sight_ref: "hiroshima", hotel_ref: "hiroshima" },
-            { day: "24.04", date: "Ср", city: "Миядзима", title: "Остров", time: "День", type: "trip", desc: "Паром (JR). Храм на воде. Олени.", food_ref: "miyajima", sight_ref: "miyajima", hotel_ref: "hiroshima" },
-            
-            // PHASE 4: FINAL OSAKA
-            { day: "25.04", date: "Чт", city: "Осака", title: "Возврат", time: "Вечер", type: "base", desc: "Синкансэн в Осаку. База: Осака (3 ночи).", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            
-            { day: "26.04", date: "Пт", city: "Осака", title: "Релакс", time: "День", type: "base", desc: "Аквариум Kaiyukan, Шинсэкай.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            { day: "27.04", date: "Сб", city: "Осака", title: "Свободный", time: "Flex", type: "base", desc: "USJ, Нара (если не были), Шопинг.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            { day: "28.04", date: "Вс", city: "Вылет", title: "Домой", time: "18:10", type: "base", desc: "KIX.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" }
+            // BLOCK 5: OSAKA FINAL (3 nights)
+            { day: "26.04", date: "Пт", city: "Осака", title: "Возврат", time: "День", type: "base", desc: "Длинный переезд Синкансэном. Заселение.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
+            { day: "27.04", date: "Сб", city: "Осака", title: "Финал", time: "Весь день", type: "base", desc: "Шопинг. Упаковка велосипедов. Якинику.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
+            { day: "28.04", date: "Вс", city: "Вылет", title: "Домой", time: "18:30", type: "base", desc: "Трансфер в KIX.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" }
         ];
 
         const mapLocations = [
             { name: "Осака", coords: [34.6937, 135.5023], desc: "База 1" },
-            { name: "Авадзи", coords: [34.5930, 135.0190], desc: "Awaichi" },
-            { name: "308 Pass", coords: [34.6700, 135.6600], desc: "37% Gradient" },
+            { name: "Авадзи (Iwaya)", coords: [34.5930, 135.0190], desc: "Вело 150км" },
+            { name: "308 Pass", coords: [34.6700, 135.6600], desc: "Хардкор" },
             { name: "Киото", coords: [35.0116, 135.7681], desc: "База 2" },
-            { name: "Химедзи", coords: [34.8394, 134.6939], desc: "Замок" },
             { name: "Хиросима", coords: [34.3853, 132.4553], desc: "База 3" },
-            { name: "Миядзима", coords: [34.2960, 132.3199], desc: "Тории" }
+            { name: "Миядзима", coords: [34.2960, 132.3199], desc: "Трейл" },
+            { name: "Кокура (Кюсю)", coords: [33.8860, 130.8821], desc: "База 4" },
+            { name: "г. Саракура", coords: [33.8447, 130.7963], desc: "Вид" }
         ];
 
         const veloPlan = {
-            title: "Вело-Гид: Final Cut",
+            title: "Вело & Трейл",
             groups: [
                 {
-                    name: "🅰️ CANYON (Вы)",
+                    name: "🚴 CANYON (Хардкор)",
                     color: "bg-red-900 text-white",
                     routes: [
-                        { name: "Awaichi 150", badge: "badge-road", desc: "150км. Старт: порт Iwaya (паром из Akashi). Юг острова сложный." },
-                        { name: "Route 308", badge: "badge-hardcore", desc: "Самый крутой перевал. Бетонные плиты. Проверка тормозов." },
-                        { name: "Arashiyama Ride", badge: "badge-casual", desc: "Утром вдоль реки Кацура. Красиво и спокойно." }
+                        { name: "Awaichi 150", badge: "badge-hardcore", desc: "150км вокруг Авадзи. Старт в 6 утра. Ветер!" },
+                        { name: "Route 308", badge: "badge-hardcore", desc: "37% градиент. Бетонные плиты. Проверка себя." }
                     ]
                 },
                 {
-                    name: "🅱️ FIXIE / CASUAL (Группа)",
-                    color: "bg-blue-900 text-white",
+                    name: "🥾 TRAIL (Пешком)",
+                    color: "bg-green-800 text-white",
                     routes: [
-                        { name: "Awaji North", badge: "badge-casual", desc: "Вдоль северного берега. Вид на мост Акаси. Плоско." },
-                        { name: "Nara Park", badge: "badge-casual", desc: "По дорожкам парка между оленями. ~20км." },
-                        { name: "Kamo River", badge: "badge-casual", desc: "Набережная Киото. Идеальный асфальт." }
+                        { name: "Fushimi Inari", badge: "badge-trail", desc: "Полный круг через гору. Уходим от туристов в лес." },
+                        { name: "Mt. Misen (Miyajima)", badge: "badge-trail", desc: "Momijidani trail. Лес, камни, олени. 535м." },
+                        { name: "Mt. Sarakura", badge: "badge-trail", desc: "Подъем пешком, спуск на фуникулере (ночной вид)." }
                     ]
                 }
             ],
-            tips: ["Авадзи: Паром (Genjel) берет велосипеды. Автобус - рискованно.", "308: Спуск в Нару опасен. Проверьте колодки."]
+            tips: ["Авадзи: Паром из Акаси (Genjel Ferry) берет велики.", "Кокура: Обязательно посетите рынок Tanga."]
         };
 
         const foodIntel = [
             { id: "osaka", city: "Осака", places: [{name:"551 Horai", dish:"Butaman"}, {name:"Endo Sushi", dish:"Sushi"}, {name:"Daruma", dish:"Kushikatsu"}] },
-            { id: "kyoto", city: "Киото", places: [{name:"Honke Owariya", dish:"Soba"}, {name:"Inoda Coffee", dish:"Breakfast"}] },
-            { id: "himeji", city: "Химедзи", places: [{name:"Yamayoshi", dish:"Oden", why:"Оден с имбирем"}, {name:"Koba & More", dish:"Ramen"}] },
-            { id: "hiroshima", city: "Хиросима", places: [{name:"Hassho", dish:"Okonomiyaki"}, {name:"Shigetomi", dish:"Beer"}] },
-            { id: "miyajima", city: "Миядзима", places: [{name:"Ueno", dish:"Anago"}, {name:"Momijido", dish:"Agemomiji"}] },
+            { id: "kyoto", city: "Киото", places: [{name:"Honke Owariya", dish:"Soba"}, {name:"Inoda Coffee", dish:"Breakfast"}, {name:"Kichi Kichi", dish:"Omurice"}] },
+            { id: "kokura", city: "Кокура", places: [{name:"Tanga Market", dish:"University Don", why:"Студенческий донбури на рынке."}, {name:"Tetsunabe", dish:"Iron Gyoza", why:"Гёдза в чугунной сковороде."}] },
+            { id: "hiroshima", city: "Хиросима", places: [{name:"Hassho", dish:"Okonomiyaki"}, {name:"Bakudanya", dish:"Tsukemen"}] },
+            { id: "miyajima", city: "Миядзима", places: [{name:"Ueno", dish:"Anago"}, {name:"Momijido", dish:"Fried Momiji"}] },
             { id: "nara", city: "Нара", places: [{name:"Nakatanidou", dish:"Mochi"}, {name:"Kakinoha", dish:"Sushi"}] }
         ];
 
         const sightsIntel = [
             { id: "osaka", city: "Осака", places: [{name: "Kaiyukan", type: "Aqua", badge: "badge-tech", detail: "Вечер."}, {name: "TeamLab", type: "Art", badge: "badge-art", detail: "Сад."}] },
-            { id: "kyoto", city: "Киото", places: [{name: "Arashiyama", type: "Nature", badge: "badge-nature", detail: "Бамбук."}, {name: "Fushimi Inari", type: "Hike", badge: "badge-history", detail: "Утро."}] },
-            { id: "himeji", city: "Химедзи", places: [{name: "Замок", type: "History", badge: "badge-history", detail: "Белая Цапля."}] },
-            { id: "hiroshima", city: "Хиросима", places: [{name: "Парк Мира", type: "History", badge: "badge-history", detail: "Музей."}] },
-            { id: "miyajima", city: "Миядзима", places: [{name: "Torii", type: "Icon", badge: "badge-local", detail: "Вода."}] }
+            { id: "kyoto", city: "Киото", places: [{name: "Fushimi Inari", type: "Hike", badge: "badge-trail", detail: "Трейл."}, {name: "Arashiyama", type: "Nature", badge: "badge-relax", detail: "Бамбук."}] },
+            { id: "kokura", city: "Кокура", places: [{name: "Kokura Castle", type: "History", badge: "badge-history", detail: "Замок."}, {name: "Mt. Sarakura", type: "View", badge: "badge-trail", detail: "Ночной вид."}] },
+            { id: "hiroshima", city: "Хиросима", places: [{name: "Peace Park", type: "History", badge: "badge-history", detail: "Музей."}, {name: "Miyajima", type: "Nature", badge: "badge-trail", detail: "Гора Мисэн."}] }
         ];
 
         const hotelIntel = [
             { id: "osaka", city: "Осака", desc: "База 1 & Финал.", places: [{name:"Onyado Nono", type:"Onsen", badge:"badge-onsen", price:"¥¥", why:"Татами."}, {name:"The Lively", type:"Vibe", badge:"badge-vibe", price:"¥¥¥", why:"Стиль."}] },
             { id: "kyoto", city: "Киото", desc: "База 2.", places: [{name:"Piece Hostel Sanjo", type:"Velo", badge:"badge-local", price:"¥", why:"Для вело."}] },
-            { id: "himeji", city: "Химедзи", desc: "База 3.", places: [{name:"Dormy Inn Himeji", type:"Onsen", badge:"badge-onsen", price:"¥¥", why:"Горячие источники."}] },
-            { id: "hiroshima", city: "Хиросима", desc: "База 4.", places: [{name:"Kiro", type:"Design", badge:"badge-design", price:"¥¥", why:"Хипстерский."}] }
+            { id: "hiroshima", city: "Хиросима", desc: "База 3.", places: [{name:"The Knot", type:"Rooftop", badge:"badge-vibe", price:"¥¥", why:"Вид на парк."}] },
+            { id: "kokura", city: "Кокура", desc: "База 4.", places: [{name:"JR Kyushu Hotel", type:"Station", badge:"badge-tech", price:"¥¥", why:"Прямо на станции."}] }
         ];
 
         const logisticsData = [
-            { type: "JR Pass", icon: "🎫", title: "Sanyo-San'in Area Pass", detail: "7 дней. Покрывает Осака-Киото-Химедзи-Хиросима.", vital: "Выгодно." },
-            { type: "Багаж", icon: "🚚", title: "Yamato", detail: "Киото -> Хиросима (или Осака, если налегке).", vital: "Налегке." }
+            { type: "JR Pass", icon: "🎫", title: "Sanyo-San'in Area Pass", detail: "7 дней. Покрывает Осака-Киото-Хиросима-Кокура (Синкансэн).", vital: "Идеально." },
+            { type: "Багаж", icon: "🚚", title: "Yamato", detail: "Киото -> Хиросима.<br>Хиросима -> Осака.", vital: "Налегке." }
         ];
         
-        const checklistData = [{ id: 1, text: "Купить Rinko Bags", done: false, urgent: true }, { id: 2, text: "Забронировать Kiro Hiroshima", done: false }, { id: 3, text: "Забронировать Onyado Nono", done: false }];
-        const budgetData = { labels: ['Отели', 'Еда', 'Транспорт', 'Шопинг'], data: [190000, 100000, 30000, 80000], total: 400000 };
+        const checklistData = [{ id: 1, text: "Купить Rinko Bags", done: false, urgent: true }, { id: 2, text: "Бронь отелей (Кокура!)", done: false }, { id: 3, text: "JR Pass Ваучер", done: false }];
+        const budgetData = { labels: ['Отели', 'Еда', 'Транспорт', 'Шопинг'], data: [200000, 100000, 30000, 80000], total: 410000 };
 
         // --- RENDERERS ---
         let currentState = { view: 'itinerary', infoSubTab: 'logistics', selectedFoodCityId: 'osaka', selectedSightsCityId: 'osaka', selectedHotelCityId: 'osaka', mapInstance: null };
@@ -176,7 +174,7 @@
             if (window.ymaps) { ymaps.ready(() => initMap(containerId)); } else { const s = document.createElement('script'); s.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`; s.onload = () => ymaps.ready(() => initMap(containerId)); document.head.appendChild(s); }
         }
         function initMap(id) {
-            const map = new ymaps.Map(id, { center: [34.5, 134.5], zoom: 7, controls: ['zoomControl'] });
+            const map = new ymaps.Map(id, { center: [34.5, 133.5], zoom: 7, controls: ['zoomControl'] });
             const coords = mapLocations.map(l => l.coords);
             map.geoObjects.add(new ymaps.Polyline(coords, {}, { strokeColor: "#e11d48", strokeWidth: 4 }));
             mapLocations.forEach(l => map.geoObjects.add(new ymaps.Placemark(l.coords, { balloonContent: l.name }, { preset: 'islands#redDotIcon' })));
@@ -208,21 +206,21 @@
         function renderItinerary(c) {
             let h = `<div class="space-y-4 pb-20">`;
             itinerary.forEach((i, idx) => {
-                const badgeClass = i.type === 'base' ? 'badge-base' : (i.type === 'opt' ? 'badge-opt' : 'badge-trip');
-                const badgeText = i.type === 'base' ? 'БАЗА' : (i.type === 'opt' ? 'ОПЦИЯ' : 'ВЫЕЗД');
-                const cardClass = i.title.includes("Route 308") ? "border-red-200 bg-red-50" : "border-stone-200 bg-white";
+                const badgeClass = i.type === 'base' ? 'badge-base' : 'badge-trip';
+                const badgeText = i.type === 'base' ? 'БАЗА' : 'ВЫЕЗД';
+                const cardClass = i.desc.includes("🅰️") ? "border-red-200 bg-red-50" : "border-stone-200 bg-white";
                 h += `<div class="flex gap-3 relative"><div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] bg-stone-200 z-0 ${idx === itinerary.length-1 ? 'hidden' : ''}"></div><div class="flex-shrink-0 z-10 text-center"><div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm"><div class="text-[10px] font-bold text-stone-600 leading-none"><div class="uppercase text-[8px] text-stone-400">${i.date}</div>${i.day.split('.')[0]}</div></div></div><div class="flex-grow ${cardClass} rounded-lg border p-3 shadow-sm"><div class="flex justify-between items-start mb-1"><div><span class="badge badge-time">${i.time}</span><h3 class="font-bold text-stone-900 text-sm inline">${i.title}</h3></div><span class="badge ${badgeClass}">${badgeText}</span></div><div class="text-[10px] text-stone-400 font-bold mb-1">📍 ${i.city}</div><p class="text-stone-600 text-xs mb-2 leading-relaxed">${i.desc}</p></div></div>`;
             });
             c.innerHTML = h + "</div>";
         }
 
         function renderMap(c) {
-            c.innerHTML = `<div class="h-full flex flex-col space-y-4"><div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm"><h2 class="font-bold text-lg">🗺️ Маршрут (Final Cut)</h2><p class="text-xs text-stone-500">Повторяет текстовый план</p></div><div id="map-container" class="flex-grow shadow-md border border-stone-300 relative"></div></div>`;
+            c.innerHTML = `<div class="h-full flex flex-col space-y-4"><div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm"><h2 class="font-bold text-lg">🗺️ Маршрут (Trail & Ride)</h2><p class="text-xs text-stone-500">Добавлен Кюсю (Кокура)</p></div><div id="map-container" class="flex-grow shadow-md border border-stone-300 relative"></div></div>`;
             loadYandexMap('map-container');
         }
 
         function renderVelo(c) {
-            let h = `<div class="space-y-6 pb-20"><div class="bg-stone-50 border border-stone-200 p-4 rounded-xl"><h2 class="font-bold text-lg mb-2">🚴 Две Группы</h2>${veloPlan.tips.map(t=>`<p class="text-xs text-stone-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}</div>`;
+            let h = `<div class="space-y-6 pb-20"><div class="bg-stone-50 border border-stone-200 p-4 rounded-xl"><h2 class="font-bold text-lg mb-2">🚴 Две Группы + Трейлы</h2>${veloPlan.tips.map(t=>`<p class="text-xs text-stone-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}</div>`;
             veloPlan.groups.forEach(g => {
                 h += `<div class="rounded-xl overflow-hidden shadow-sm mb-4"><div class="${g.color} p-3 font-bold text-sm">${g.name}</div><div class="bg-white border-x border-b border-stone-200 p-4 space-y-3">`;
                 g.routes.forEach(r => h += `<div><div class="flex justify-between items-baseline"><h4 class="font-bold text-sm text-stone-800">${r.name}</h4><span class="badge ${r.badge}">${r.badge.split('-')[1].toUpperCase()}</span></div><p class="text-xs text-stone-500 mt-1">${r.desc}</p></div>`);
