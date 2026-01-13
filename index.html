@@ -7,7 +7,6 @@
     
     <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=5912b65b-5a13-482f-bf3c-6a11282b5100&lang=ru_RU" type="text/javascript"></script>
 
     <!-- Fonts -->
@@ -15,27 +14,173 @@
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Noto Sans', sans-serif; background-color: #fcfbf9; color: #292524; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg-primary: #fcfbf9;
+            --bg-secondary: #ffffff;
+            --text-primary: #292524;
+            --text-secondary: #57534e;
+            --border-color: #e7e5e4;
+            --accent-color: #e11d48;
+        }
+
+        /* Dark theme */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1c1917;
+                --bg-secondary: #292524;
+                --text-primary: #e7e5e4;
+                --text-secondary: #a8a29e;
+                --border-color: #44403c;
+            }
+
+            .bg-white { background-color: #292524 !important; }
+            .bg-stone-50 { background-color: #1c1917 !important; }
+            .bg-stone-100 { background-color: #292524 !important; }
+            .text-stone-900 { color: #e7e5e4 !important; }
+            .text-stone-800 { color: #d6d3d1 !important; }
+            .text-stone-600 { color: #a8a29e !important; }
+            .text-stone-500 { color: #78716c !important; }
+            .border-stone-200 { border-color: #44403c !important; }
+            .border-stone-300 { border-color: #57534e !important; }
+
+            #map-container { background: #292524 !important; }
+
+            .ymaps-2-1-79-balloon__content {
+                background: #292524 !important;
+            }
+            .balloon-title { color: #e7e5e4 !important; }
+            .balloon-desc { color: #a8a29e !important; }
+        }
+
+        body {
+            font-family: 'Noto Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease;
+        }
+
         h1, h2, h3, .serif-font { font-family: 'Merriweather', serif; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .mobile-safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        .fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        #map-container { height: 100%; min-height: 700px; width: 100%; border-radius: 12px; z-index: 1; background: #e5e7eb; overflow: hidden; }
+        /* Enhanced animations */
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Badges */
-        .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .badge-base { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; } 
+        .slide-in-right {
+            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        /* Pulse animation for urgent items */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .badge-urgent {
+            animation: pulse-subtle 2s ease-in-out infinite;
+        }
+
+        /* Timeline gradient */
+        .timeline-line {
+            background: linear-gradient(180deg, #e11d48 0%, #f97316 50%, #0891b2 100%);
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, #e7e5e4 25%, #f5f5f4 50%, #e7e5e4 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s ease-in-out infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .skeleton {
+                background: linear-gradient(90deg, #292524 25%, #3f3f46 50%, #292524 75%);
+                background-size: 200% 100%;
+            }
+        }
+
+        #map-container {
+            height: 100%;
+            min-height: 700px;
+            width: 100%;
+            border-radius: 12px;
+            z-index: 1;
+            background: #e5e7eb;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Map skeleton */
+        .map-skeleton {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #e7e5e4 25%, #f5f5f4 50%, #e7e5e4 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s ease-in-out infinite;
+            z-index: 10;
+            border-radius: 12px;
+        }
+
+        /* Progress bar */
+        .progress-bar-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+        }
+        .badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .badge-base { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
         .badge-trip { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
         .badge-time { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; margin-right: 6px; }
-        
-        /* Sport Badges */
         .badge-road { background: #172554; color: #bfdbfe; border: 1px solid #1d4ed8; }
         .badge-casual { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
-
-        /* General badges */
         .badge-history { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; }
         .badge-local { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
         .badge-sweet { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
@@ -45,13 +190,291 @@
         .badge-design { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
         .badge-vibe { background: #fdf4ff; color: #86198f; border: 1px solid #f0abfc; }
         .badge-value { background: #ecfccb; color: #3f6212; border: 1px solid #d9f99d; }
+        .badge-art { background: #fefce8; color: #854d0e; border: 1px solid #fde68a; }
+        .badge-nature { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
+        .badge-relax { background: #f0f9ff; color: #075985; border: 1px solid #7dd3fc; }
+        .badge-trek { background: #f5f3ff; color: #5b21b6; border: 1px solid #c4b5fd; }
 
-        .segmented-control { background: #e7e5e4; padding: 4px; border-radius: 8px; display: flex; }
-        .segment-btn { flex: 1; text-align: center; padding: 8px 0; font-size: 13px; font-weight: 600; border-radius: 6px; color: #57534e; transition: all 0.2s; }
-        .segment-active { background: white; color: #1c1917; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        /* Premium gradient badge */
+        .badge-premium {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: .65rem;
+            font-weight: 700;
+            border: 1px solid #e7e5e4;
+            background: #fafaf9;
+            color: #44403c;
+            transition: all 0.2s ease;
+        }
+        .tag-pill:hover {
+            background: #e7e5e4;
+            transform: scale(1.05);
+        }
+
+        .segmented-control {
+            background: #e7e5e4;
+            padding: 4px;
+            border-radius: 8px;
+            display: flex;
+        }
+        .segment-btn {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            color: #57534e;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .segment-active {
+            background: white;
+            color: #1c1917;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .segmented-control { background: #44403c; }
+            .segment-btn { color: #a8a29e; }
+            .segment-active { background: #292524; color: #e7e5e4; }
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #e11d48 0%, #f97316 100%);
+            color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 40;
+        }
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.6);
+        }
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        @media (min-width: 768px) {
+            .fab {
+                bottom: 24px;
+            }
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 90vw;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast-success { background: #10b981; color: white; }
+        .toast-error { background: #ef4444; color: white; }
+        .toast-info { background: #3b82f6; color: white; }
+
+        /* Search input */
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+        }
+
+        /* Stats cards */
+        .stat-card {
+            background: linear-gradient(135deg, var(--from), var(--to));
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        /* Image placeholder gradients */
+        .img-placeholder-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .img-placeholder-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .img-placeholder-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .img-placeholder-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .img-placeholder-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .img-placeholder-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+
+        /* Day marker with check */
+        .day-marker {
+            position: relative;
+        }
+        .day-marker::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        .day-completed .day-marker::after {
+            opacity: 1;
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            position: fixed;
+            top: 70px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Yandex Maps Balloon Styling */
+        .ymaps-2-1-79-balloon__layout {
+            border-radius: 8px !important;
+            overflow: hidden !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        .ymaps-2-1-79-balloon__content {
+            padding: 12px !important;
+            min-width: 200px !important;
+            max-width: 280px !important;
+        }
+
+        .balloon-title {
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #1c1917 !important;
+            margin-bottom: 4px !important;
+            line-height: 1.2 !important;
+        }
+
+        .balloon-desc {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+            color: #57534e !important;
+        }
+
+        @media (max-width: 420px) {
+            .ymaps-2-1-79-balloon__content {
+                min-width: 180px !important;
+                max-width: 85vw !important;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Bottom Sheet Modal */
+        .bottom-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .bottom-sheet-overlay.show {
+            opacity: 1;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bottom-sheet.show {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: #d4d4d8;
+            border-radius: 2px;
+            margin: 12px auto 16px;
+        }
+
+        .route-detail-map {
+            height: 450px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .route-detail-map {
+                height: 100%;
+                min-height: 450px;
+            }
+        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen pb-20 md:pb-0">
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
+        <span id="theme-icon">🌙</span>
+    </div>
 
     <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm safe-top">
         <div class="max-w-6xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
@@ -66,6 +489,9 @@
         </div>
     </header>
 
+    <!-- Progress Bar -->
+    <div id="progress-bar-container" class="hidden sticky top-14 md:top-16 bg-white border-b border-stone-200 z-40 shadow-sm"></div>
+
     <main class="flex-grow w-full max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8 h-full">
         <div id="app-view" class="fade-in h-full"></div>
     </main>
@@ -74,38 +500,152 @@
         <div class="grid grid-cols-6 h-16" id="mobile-bottom-nav"></div>
     </nav>
 
+    <!-- Floating Action Button -->
+    <div class="fab" onclick="showQuickActions()" title="Быстрые действия">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 4v16m8-8H4" />
+        </svg>
+    </div>
+
     <script>
         // ============================================
-        // 🔑 API КЛЮЧ
+        // 🔑 CONFIGURATION
         // ============================================
-        const YANDEX_API_KEY = '5912b65b-5a13-482f-bf3c-6a11282b5100'; 
-        
+        const YANDEX_API_KEY = '5912b65b-5a13-482f-bf3c-6a11282b5100';
+        const TRIP_START_DATE = new Date('2026-04-15');
+        const THEME_KEY = 'jp2026_theme';
+
+        // ============================================
+        // 🛠️ HELPER FUNCTIONS
+        // ============================================
+        const isMobile = () => window.innerWidth <= 768;
+        const qs = (sel, root=document) => root.querySelector(sel);
+        const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+        const safe = (v, fallback='') => (v === undefined || v === null ? fallback : v);
+
+        // Theme management
+        let currentTheme = localStorage.getItem(THEME_KEY) || 'auto';
+
+        function toggleTheme() {
+            const themes = ['auto', 'light', 'dark'];
+            const currentIndex = themes.indexOf(currentTheme);
+            currentTheme = themes[(currentIndex + 1) % themes.length];
+            localStorage.setItem(THEME_KEY, currentTheme);
+            applyTheme();
+            showToast('Тема переключена: ' + (currentTheme === 'auto' ? 'Авто' : currentTheme === 'light' ? 'Светлая' : 'Темная'), 'info');
+        }
+
+        function applyTheme() {
+            const icon = document.getElementById('theme-icon');
+            if (currentTheme === 'light') {
+                document.documentElement.style.colorScheme = 'light';
+                icon.textContent = '☀️';
+            } else if (currentTheme === 'dark') {
+                document.documentElement.style.colorScheme = 'dark';
+                icon.textContent = '🌙';
+            } else {
+                document.documentElement.style.colorScheme = 'light dark';
+                icon.textContent = '🌗';
+            }
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
+            toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Quick actions menu
+        function showQuickActions() {
+            const actions = [
+                { label: 'Добавить в чеклист', action: () => { switchView('info'); changeInfo('logistics'); setTimeout(() => document.getElementById('add-check-item')?.click(), 200); } },
+                { label: 'Поиск по плану', action: () => { switchView('itinerary'); setTimeout(() => document.getElementById('search-input')?.focus(), 200); } },
+                { label: 'Экспорт в PDF', action: () => showToast('Функция в разработке', 'info') }
+            ];
+
+            const menu = actions.map((a, i) => `<button onclick="(${a.action})(); closeQuickMenu();" class="w-full text-left px-4 py-3 hover:bg-stone-50 transition-colors">${a.label}</button>`).join('');
+
+            const overlay = document.createElement('div');
+            overlay.id = 'quick-menu-overlay';
+            overlay.className = 'fixed inset-0 bg-black bg-opacity-30 z-[60] fade-in';
+            overlay.onclick = closeQuickMenu;
+
+            const menuDiv = document.createElement('div');
+            menuDiv.id = 'quick-menu';
+            menuDiv.className = 'fixed bottom-20 right-4 bg-white rounded-xl shadow-2xl overflow-hidden z-[70] slide-in-right';
+            menuDiv.innerHTML = menu;
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(menuDiv);
+        }
+
+        function closeQuickMenu() {
+            document.getElementById('quick-menu-overlay')?.remove();
+            document.getElementById('quick-menu')?.remove();
+        }
+
+        // Calculate days until trip
+        function getDaysUntilTrip() {
+            const now = new Date();
+            const diff = TRIP_START_DATE - now;
+            return Math.ceil(diff / (1000 * 60 * 60 * 24));
+        }
+
+        // Render progress bar
+        function renderProgressBar() {
+            const container = document.getElementById('progress-bar-container');
+            if (currentState.view !== 'itinerary') {
+                container.classList.add('hidden');
+                return;
+            }
+
+            const days = getDaysUntilTrip();
+            const totalDays = 365; // Assuming planning started ~1 year before
+            const progress = Math.max(0, Math.min(100, ((totalDays - days) / totalDays) * 100));
+
+            container.classList.remove('hidden');
+            container.innerHTML = `
+                <div class="max-w-6xl mx-auto px-4 py-3">
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="font-bold text-stone-600">До поездки</span>
+                        <span class="font-bold" style="color: ${days < 30 ? '#e11d48' : '#0891b2'}">${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}</span>
+                    </div>
+                    <div class="h-2 bg-stone-200 rounded-full overflow-hidden progress-bar-container">
+                        <div class="h-full bg-gradient-to-r from-red-500 via-orange-500 to-blue-500 progress-bar-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
         // ================= DATA =================
 
         const itinerary = [
-            // PHASE 1: OSAKA (3 nights)
-            { day: "15.04", date: "Ср", city: "Осака", title: "Прибытие", time: "День", type: "base", desc: "Прилет 11:45. База: Осака (3 ночи). Сборка велосипедов. Вечерний Дотонбори.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            { day: "16.04", date: "Чт", city: "Авадзи", title: "Awaichi", time: "06:00", type: "trip", desc: "Велосипедный день на острове Авадзи. Круговой маршрут (150км) или прогулочный по северу.", food_ref: "kobe", sight_ref: "velo", hotel_ref: "osaka" },
-            { day: "17.04", date: "Пт", city: "Кобе", title: "Порт и Горы", time: "08:00", type: "trip", desc: "Радиальный выезд. Водопады Нунобики, гора Рокко, набережная. Обед с мясом Кобе.", food_ref: "kobe", sight_ref: "kobe", hotel_ref: "osaka" },
-            
-            // PHASE 2: KYOTO (3 nights)
-            { day: "18.04", date: "Сб", city: "Киото", title: "Переезд", time: "Утро", type: "base", desc: "Поезд в Киото. База: Киото (3 ночи). Вечерний Гион и Понтотё.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
-            { day: "19.04", date: "Вс", city: "Киото", title: "Вело-день", time: "07:00", type: "base", desc: "Поездка на север к горам или на восток к озеру Бива.", food_ref: "biwa", sight_ref: "velo", hotel_ref: "kyoto" },
-            { day: "20.04", date: "Пн", city: "Киото", title: "Культура", time: "День", type: "base", desc: "Пеший день. Золотой павильон, Сад камней, Бамбуковая роща (Арасияма).", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto" },
-            
-            // PHASE 3: HIROSHIMA (3 nights)
-            { day: "21.04", date: "Вт", city: "Хиросима", title: "Запад", time: "Утро", type: "base", desc: "Активация Пасса. Синкансэн. База: Хиросима (3 ночи). Парк Мира.", food_ref: "hiroshima", sight_ref: "hiroshima", hotel_ref: "hiroshima" },
-            { day: "22.04", date: "Ср", city: "Миядзима", title: "Остров", time: "День", type: "trip", desc: "Паром. Храм Ицукусима. Хайкинг на гору Мисэн.", food_ref: "miyajima", sight_ref: "miyajima", hotel_ref: "hiroshima" },
-            { day: "23.04", date: "Чт", city: "Ономити", title: "Шиманами", time: "07:00", type: "trip", desc: "Велосипедный день: Шиманами Кайдо (через мосты).", food_ref: "onomichi", sight_ref: "velo", hotel_ref: "hiroshima" },
-            
-            // PHASE 4: KOKURA (3 nights) - Base for Kyushu
-            { day: "24.04", date: "Пт", city: "Кокура", title: "Кюсю", time: "Утро", type: "base", desc: "Синкансэн. База: Кокура (3 ночи). Замок, Рынок Танга.", food_ref: "kokura", sight_ref: "kokura", hotel_ref: "kokura" },
-            { day: "25.04", date: "Сб", city: "Фукуока", title: "Гастрономия", time: "10:00", type: "trip", desc: "Радиальный выезд в Хакату (15 мин). Рамен, шопинг, Ятай.", food_ref: "fukuoka", sight_ref: "fukuoka", hotel_ref: "kokura" },
-            { day: "26.04", date: "Вс", city: "Итосима", title: "Океан", time: "09:00", type: "trip", desc: "Велосипедная прогулка вдоль побережья (Sunset Road).", food_ref: "fukuoka", sight_ref: "velo", hotel_ref: "kokura" },
-            
-            // PHASE 5: FINAL OSAKA (2 nights)
-            { day: "27.04", date: "Пн", city: "Осака", title: "Возврат", time: "День", type: "base", desc: "Синкансэн Кокура -> Осака. Финальная база (2 ночи). Упаковка.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" },
-            { day: "28.04", date: "Вт", city: "Вылет", title: "Домой", time: "18:10", type: "base", desc: "Трансфер в аэропорт KIX.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka" }
+            { day: "15.04", date: "Ср", city: "Осака", title: "Прибытие", time: "День", type: "base", desc: "Прилет 11:45. База: Осака (3 ночи). Сборка велосипедов. Вечерний Дотонбори.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-1" },
+            { day: "16.04", date: "Чт", city: "Авадзи", title: "Awaichi", time: "06:00", type: "trip", desc: "Велосипедный день на острове Авадзи. Круговой маршрут (150км) или прогулочный по северу.", food_ref: "kobe", sight_ref: "velo", hotel_ref: "osaka", imgClass: "img-placeholder-2" },
+            { day: "17.04", date: "Пт", city: "Кобе", title: "Порт и Горы", time: "08:00", type: "trip", desc: "Радиальный выезд. Водопады Нунобики, гора Рокко, набережная. Обед с мясом Кобе.", food_ref: "kobe", sight_ref: "kobe", hotel_ref: "osaka", imgClass: "img-placeholder-3" },
+            { day: "18.04", date: "Сб", city: "Киото", title: "Переезд", time: "Утро", type: "base", desc: "Поезд в Киото. База: Киото (3 ночи). Вечерний Гион и Понтотё.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto", imgClass: "img-placeholder-4" },
+            { day: "19.04", date: "Вс", city: "Киото", title: "Вело-день", time: "07:00", type: "base", desc: "Поездка на север к горам или на восток к озеру Бива.", food_ref: "biwa", sight_ref: "velo", hotel_ref: "kyoto", imgClass: "img-placeholder-5" },
+            { day: "20.04", date: "Пн", city: "Киото", title: "Культура", time: "День", type: "base", desc: "Пеший день. Золотой павильон, Сад камней, Бамбуковая роща (Арасияма).", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto", imgClass: "img-placeholder-6" },
+            { day: "21.04", date: "Вт", city: "Хиросима", title: "Запад", time: "Утро", type: "base", desc: "Активация Пасса. Синкансэн. База: Хиросима (3 ночи). Парк Мира.", food_ref: "hiroshima", sight_ref: "hiroshima", hotel_ref: "hiroshima", imgClass: "img-placeholder-1" },
+            { day: "22.04", date: "Ср", city: "Миядзима", title: "Остров", time: "День", type: "trip", desc: "Паром. Храм Ицукусима. Хайкинг на гору Мисэн.", food_ref: "miyajima", sight_ref: "miyajima", hotel_ref: "hiroshima", imgClass: "img-placeholder-2" },
+            { day: "23.04", date: "Чт", city: "Ономити", title: "Шиманами", time: "07:00", type: "trip", desc: "Велосипедный день: Шиманами Кайдо (через мосты).", food_ref: "onomichi", sight_ref: "velo", hotel_ref: "hiroshima", imgClass: "img-placeholder-3" },
+            { day: "24.04", date: "Пт", city: "Кокура", title: "Кюсю", time: "Утро", type: "base", desc: "Синкансэн. База: Кокура (3 ночи). Замок, Рынок Танга.", food_ref: "kokura", sight_ref: "kokura", hotel_ref: "kokura", imgClass: "img-placeholder-4" },
+            { day: "25.04", date: "Сб", city: "Фукуока", title: "Гастрономия", time: "10:00", type: "trip", desc: "Радиальный выезд в Хакату (15 мин). Рамен, шопинг, Ятай.", food_ref: "fukuoka", sight_ref: "fukuoka", hotel_ref: "kokura", imgClass: "img-placeholder-5" },
+            { day: "26.04", date: "Вс", city: "Итосима", title: "Океан", time: "09:00", type: "trip", desc: "Велосипедная прогулка вдоль побережья (Sunset Road).", food_ref: "fukuoka", sight_ref: "velo", hotel_ref: "kokura", imgClass: "img-placeholder-6" },
+            { day: "27.04", date: "Пн", city: "Осака", title: "Возврат", time: "День", type: "base", desc: "Синкансэн Кокура -> Осака. Финальная база (2 ночи). Упаковка.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-1" },
+            { day: "28.04", date: "Вт", city: "Вылет", title: "Домой", time: "18:10", type: "base", desc: "Трансфер в аэропорт KIX.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-2" }
         ];
 
         const mapLocations = [
@@ -131,10 +671,104 @@
                     name: "🚴 Основные Маршруты",
                     color: "bg-blue-900 text-white",
                     routes: [
-                        { name: "Awaichi (Awaji)", badge: "badge-road", desc: "Круг вокруг острова Авадзи. Полный 150км или часть." },
-                        { name: "Shimanami Kaido", badge: "badge-road", desc: "70км через 6 островов и мосты. Классика." },
-                        { name: "Kamo River", badge: "badge-casual", desc: "Киото. Расслабленная езда вдоль реки." },
-                        { name: "Itoshima Sunset", badge: "badge-road", desc: "Фукуока. Красивая дорога вдоль океана." }
+                        {
+                            id: "awaichi",
+                            name: "Awaichi (Awaji)",
+                            badge: "badge-road",
+                            desc: "Круг вокруг острова Авадзи. Полный 150км или часть.",
+                            distance: "150 км",
+                            gradient: "Средний: 2%, Макс: 8%",
+                            elevation: "+800m",
+                            duration: "6-8 часов",
+                            difficulty: "Средняя",
+                            highlights: ["Пляжи", "Храмы", "Виды на океан"],
+                            center: [34.5930, 135.0190],
+                            mapLink: "https://www.google.com/maps/d/viewer?mid=1XnKFzYFJH6LkGC_awaichi"
+                            // track: [
+                            //     [34.5930, 135.0190], [34.6100, 135.0100], [34.6400, 134.9800],
+                            //     [34.6800, 134.9500], [34.7000, 134.9300], [34.7100, 134.9100],
+                            //     [34.7000, 134.8900], [34.6700, 134.8800], [34.6300, 134.8700],
+                            //     [34.5800, 134.8800], [34.5400, 134.9100], [34.5200, 134.9500],
+                            //     [34.5100, 135.0000], [34.5300, 135.0400], [34.5600, 135.0600],
+                            //     [34.5930, 135.0190]
+                            // ]
+                        },
+                        {
+                            id: "shimanami",
+                            name: "Shimanami Kaido",
+                            badge: "badge-road",
+                            desc: "70км через 6 островов и мосты. Классика.",
+                            distance: "70 км",
+                            gradient: "Средний: 3%, Макс: 12%",
+                            elevation: "+600m",
+                            duration: "4-6 часов",
+                            difficulty: "Средняя-Высокая",
+                            highlights: ["6 мостов", "Острова", "Виды с мостов"],
+                            center: [34.2563, 133.0256],
+                            mapLink: "https://www.google.com/maps/d/viewer?mid=1shimanami"
+                            // track: [
+                            //     [34.4095, 133.2049], [34.4000, 133.1800], [34.3700, 133.1400],
+                            //     [34.3400, 133.1000], [34.3100, 133.0600], [34.2800, 133.0200],
+                            //     [34.2563, 132.9800], [34.2400, 132.9400], [34.2200, 132.9000],
+                            //     [34.2000, 132.8600], [34.1800, 132.8200]
+                            // ]
+                        },
+                        {
+                            id: "kamo",
+                            name: "Kamo River",
+                            badge: "badge-casual",
+                            desc: "Киото. Расслабленная езда вдоль реки.",
+                            distance: "25 км",
+                            gradient: "Средний: 1%, Макс: 3%",
+                            elevation: "+50m",
+                            duration: "2-3 часа",
+                            difficulty: "Легкая",
+                            highlights: ["Река", "Парки", "Храмы"],
+                            center: [35.0116, 135.7681],
+                            mapLink: "https://www.google.com/maps/d/viewer?mid=1kamo"
+                            // track: [
+                            //     [35.0400, 135.7681], [35.0350, 135.7700], [35.0250, 135.7720],
+                            //     [35.0150, 135.7740], [35.0050, 135.7760], [34.9950, 135.7780],
+                            //     [34.9850, 135.7800], [34.9750, 135.7780], [34.9650, 135.7760],
+                            //     [34.9750, 135.7740], [34.9850, 135.7720], [35.0000, 135.7700],
+                            //     [35.0116, 135.7681]
+                            // ]
+                        },
+                        {
+                            id: "itoshima",
+                            name: "Itoshima Sunset",
+                            badge: "badge-road",
+                            desc: "Фукуока. Красивая дорога вдоль океана.",
+                            distance: "45 км",
+                            gradient: "Средний: 2%, Макс: 6%",
+                            elevation: "+200m",
+                            duration: "3-4 часа",
+                            difficulty: "Средняя",
+                            highlights: ["Закаты", "Пляжи", "Серфинг"],
+                            center: [33.6133, 130.1983],
+                            mapLink: "https://www.google.com/maps/d/viewer?mid=1itoshima"
+                            // track: [
+                            //     [33.5902, 130.4207], [33.5950, 130.3900], [33.6000, 130.3600],
+                            //     [33.6050, 130.3300], [33.6100, 130.3000], [33.6133, 130.2700],
+                            //     [33.6150, 130.2400], [33.6133, 130.2100], [33.6100, 130.1983],
+                            //     [33.6050, 130.1700], [33.6000, 130.1500]
+                            // ]
+                        },
+                        {
+                            id: "route308",
+                            name: "Route 308 — 暗峠 (Kuragari Pass)",
+                            badge: "badge-road",
+                            desc: "Osaka (Higashi-Osaka) → Nara (Ikoma). Самый жёсткий подъём на границе префектур.",
+                            distance: "≈30 км",
+                            gradient: "Участками очень круто (перевал 暗峠)",
+                            elevation: "+650m",
+                            duration: "3–4 часа",
+                            difficulty: "Очень высокая",
+                            highlights: ["暗峠 (Kuragari Pass)", "граница Osaka↔Nara", "челлендж-подъём"],
+                            center: [34.66583, 135.67139],
+                            mapLink: "https://www.google.com/maps?q=34.66583,135.67139"
+                            // track: []
+                        }
                     ]
                 }
             ],
@@ -172,163 +806,935 @@
             { type: "Багаж", icon: "🚚", title: "Yamato", detail: "Киото -> Хиросима.<br>Хиросима -> Осака.", vital: "Налегке." }
         ];
         
-        const checklistData = [{ id: 1, text: "Купить Rinko Bags", done: false, urgent: true }, { id: 2, text: "Забронировать отели", done: false }, { id: 3, text: "JR Pass Ваучер", done: false }];
-        const budgetData = { labels: ['Отели', 'Еда', 'Транспорт', 'Шопинг'], data: [210000, 100000, 35000, 80000], total: 425000 };
+        const checklistData = [
+            { id: 1, text: "Купить Rinko Bags", done: false, urgent: true },
+            { id: 2, text: "Забронировать отели", done: false },
+            { id: 3, text: "JR Pass Ваучер", done: false }
+        ];
+
+        // ============================================
+        // 📝 CHECKLIST with LocalStorage
+        // ============================================
+        const CHECKLIST_KEY = 'jp2026_checklist_v1';
+
+        function loadChecklist() {
+            const saved = localStorage.getItem(CHECKLIST_KEY);
+            if (!saved) return checklistData;
+            try { return JSON.parse(saved); } catch { return checklistData; }
+        }
+
+        function saveChecklist(list) {
+            localStorage.setItem(CHECKLIST_KEY, JSON.stringify(list));
+        }
+
+        let checklist = loadChecklist();
+        let filteredItinerary = [...itinerary];
 
         // --- RENDERERS ---
-        let currentState = { view: 'itinerary', infoSubTab: 'logistics', selectedFoodCityId: 'osaka', selectedSightsCityId: 'osaka', selectedHotelCityId: 'osaka', mapInstance: null };
+        let currentState = {
+            view: 'itinerary',
+            infoSubTab: 'logistics',
+            selectedFoodCityId: 'osaka',
+            selectedSightsCityId: 'osaka',
+            selectedHotelCityId: 'osaka',
+            mapInstance: null,
+            searchQuery: ''
+        };
 
-        function init() { loadYandexMap('map-container'); renderDesktopNav(); renderMobileNav(); renderCurrentView(); }
+        // ============================================
+        // 🔗 URL STATE MANAGEMENT
+        // ============================================
+        function readUrlState() {
+            const u = new URL(window.location.href);
+            const view = u.searchParams.get('view');
+            const sub = u.searchParams.get('sub');
+            const city = u.searchParams.get('city');
 
+            if (view) currentState.view = view;
+            if (sub && currentState.view === 'info') currentState.infoSubTab = sub;
+
+            if (city) {
+                if (currentState.view === 'food') currentState.selectedFoodCityId = city;
+                if (currentState.view === 'sights') currentState.selectedSightsCityId = city;
+                // if (currentState.view === 'hotels') currentState.selectedHotelCityId = city;
+            }
+        }
+
+        function writeUrlState() {
+            const u = new URL(window.location.href);
+            u.searchParams.set('view', currentState.view);
+
+            if (currentState.view === 'info') u.searchParams.set('sub', currentState.infoSubTab);
+            else u.searchParams.delete('sub');
+
+            if (['food','sights'/* ,'hotels' */].includes(currentState.view)) {
+                const city =
+                    currentState.view === 'food' ? currentState.selectedFoodCityId :
+                    currentState.view === 'sights' ? currentState.selectedSightsCityId :
+                    currentState.selectedHotelCityId;
+                u.searchParams.set('city', city);
+            } else {
+                u.searchParams.delete('city');
+            }
+
+            history.replaceState(null, '', u.toString());
+        }
+
+        // ============================================
+        // 🗺️ YANDEX MAP
+        // ============================================
         function loadYandexMap(containerId) {
-            if (window.ymaps) { ymaps.ready(() => initMap(containerId)); } else { const s = document.createElement('script'); s.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`; s.onload = () => ymaps.ready(() => initMap(containerId)); document.head.appendChild(s); }
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            // Show skeleton
+            container.innerHTML = '<div class="map-skeleton"></div>';
+
+            if (window.ymaps) {
+                ymaps.ready(() => initMap(containerId));
+            } else {
+                const s = document.createElement('script');
+                s.src = `https://api-maps.yandex.ru/2.1/?apikey=${YANDEX_API_KEY}&lang=ru_RU`;
+                s.onload = () => ymaps.ready(() => initMap(containerId));
+                document.head.appendChild(s);
+            }
         }
+
         function initMap(id) {
-            const map = new ymaps.Map(id, { center: [34.5, 133.5], zoom: 7, controls: ['zoomControl'] });
+            const container = document.getElementById(id);
+            if (!container) return;
 
-            // Линия между базовыми городами
+            // Remove skeleton
+            container.innerHTML = '';
+
+            const map = new ymaps.Map(id, {
+                center: [34.5, 133.5],
+                zoom: 7,
+                controls: ['zoomControl']
+            });
+
+            // Save reference for quick jump
+            window.yandexMap = map;
+
+            const isMobile = window.innerWidth <= 768;
+
+            function makePlacemark({ coords, name, desc, preset, isMobile }) {
+                const balloonContent = `
+                    <div class="balloon-title">${name}</div>
+                    <div class="balloon-desc">${desc}</div>
+                `;
+
+                const placemark = new ymaps.Placemark(
+                    coords,
+                    {
+                        iconCaption: name,
+                        balloonContentBody: balloonContent
+                    },
+                    {
+                        preset,
+                        hideIconOnBalloonOpen: false,
+                        balloonOffset: [0, -32],
+                        balloonMaxWidth: 280,
+                        balloonAutoPan: true,
+                        balloonCloseButton: isMobile
+                    }
+                );
+
+                if (isMobile) {
+                    placemark.events.add('click', () => {
+                        placemark.balloon.open();
+                    });
+                } else {
+                    placemark.events.add('mouseenter', () => {
+                        placemark.balloon.open();
+                    });
+                    placemark.events.add('mouseleave', () => {
+                        placemark.balloon.close();
+                    });
+                    placemark.events.add('mousedown', () => placemark.balloon.open());
+                }
+
+                return placemark;
+            }
+
             const coords = mapLocations.map(l => l.coords);
-            map.geoObjects.add(new ymaps.Polyline(coords, {}, { strokeColor: "#e11d48", strokeWidth: 4 }));
+            map.geoObjects.add(new ymaps.Polyline(coords, {}, {
+                strokeColor: "#e11d48",
+                strokeWidth: 4
+            }));
 
-            // Маркеры базовых городов (красные)
             mapLocations.forEach(l => {
-                const placemark = new ymaps.Placemark(l.coords, {
-                    iconCaption: l.name,
-                    hintContent: `<strong>${l.name}</strong><br>${l.desc}`
-                }, {
+                const placemark = makePlacemark({
+                    coords: l.coords,
+                    name: l.name,
+                    desc: l.desc,
                     preset: 'islands#redDotIconWithCaption',
-                    hideIconOnBalloonOpen: false
+                    isMobile
                 });
                 map.geoObjects.add(placemark);
             });
 
-            // Маркеры точек интереса (синие, без линий)
             pointsOfInterest.forEach(poi => {
-                const placemark = new ymaps.Placemark(poi.coords, {
-                    iconCaption: poi.name,
-                    hintContent: `<strong>${poi.name}</strong><br>${poi.desc}`
-                }, {
+                const placemark = makePlacemark({
+                    coords: poi.coords,
+                    name: poi.name,
+                    desc: poi.desc,
                     preset: 'islands#blueDotIconWithCaption',
-                    hideIconOnBalloonOpen: false
+                    isMobile
                 });
                 map.geoObjects.add(placemark);
             });
+
+            showToast('Карта загружена', 'success');
         }
 
+        // ============================================
+        // 🔍 SEARCH & FILTER
+        // ============================================
+        function filterItinerary(query) {
+            currentState.searchQuery = query.toLowerCase();
+            if (!query) {
+                filteredItinerary = [...itinerary];
+            } else {
+                filteredItinerary = itinerary.filter(item =>
+                    item.title.toLowerCase().includes(query) ||
+                    item.city.toLowerCase().includes(query) ||
+                    item.desc.toLowerCase().includes(query)
+                );
+            }
+            renderCurrentView();
+        }
+
+        // ============================================
+        // 📱 SWIPE GESTURES
+        // ============================================
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const diff = touchEndX - touchStartX;
+            const threshold = 100;
+
+            if (Math.abs(diff) < threshold) return;
+
+            const views = ['itinerary', 'velo', 'map', 'food', /* 'hotels', */ 'info'];
+            const currentIndex = views.indexOf(currentState.view);
+
+            if (diff > 0 && currentIndex > 0) {
+                // Swipe right - previous
+                switchView(views[currentIndex - 1]);
+            } else if (diff < 0 && currentIndex < views.length - 1) {
+                // Swipe left - next
+                switchView(views[currentIndex + 1]);
+            }
+        }
+
+        // ============================================
+        // 🎨 RENDERING
+        // ============================================
         function renderDesktopNav() {
-            const tabs = [ {id:'itinerary',label:'📅 План'}, {id:'map',label:'🗺️ Карта'}, {id:'velo',label:'🚴 Вело'}, {id:'hotels',label:'🛏️ Жилье'}, {id:'food',label:'🍜 Еда'}, {id:'sights',label:'⛩️ Места'}, {id:'info',label:'ℹ️ Инфо'} ];
-            document.getElementById('desktop-nav').innerHTML = tabs.map(t => `<button onclick="switchView('${t.id}')" class="px-3 py-2 rounded-md ${currentState.view === t.id ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-100'}">${t.label}</button>`).join('');
+            const tabs = [
+                {id:'itinerary',label:'📅 План'},
+                {id:'map',label:'🗺️ Карта'},
+                {id:'velo',label:'🚴 Вело'},
+                // {id:'hotels',label:'🛏️ Жилье'},
+                {id:'food',label:'🍜 Еда'},
+                {id:'sights',label:'⛩️ Места'},
+                {id:'info',label:'ℹ️ Инфо'}
+            ];
+            document.getElementById('desktop-nav').innerHTML = tabs.map(t =>
+                `<button onclick="switchView('${t.id}')" class="px-3 py-2 rounded-md transition-all ${
+                    currentState.view === t.id ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-100'
+                }">${t.label}</button>`
+            ).join('');
         }
 
         function renderMobileNav() {
-            const tabs = [ { id: 'itinerary', label: 'План', icon: '<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' }, { id: 'velo', label: 'Вело', icon: '<path d="M13 10V3L4 14h7v7l9-11h-7z" />' }, { id: 'map', label: 'Карта', icon: '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />' }, { id: 'food', label: 'Еда', icon: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />' }, { id: 'hotels', label: 'Сон', icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' }, { id: 'info', label: 'Инфо', icon: '<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />' } ];
-            document.getElementById('mobile-bottom-nav').innerHTML = tabs.map(t => `<button onclick="switchView('${t.id}')" class="flex flex-col items-center justify-center w-full ${currentState.view === t.id ? 'text-stone-900' : 'text-stone-400'}"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${t.icon}</svg><span class="text-[10px] font-bold">${t.label}</span></button>`).join('');
+            const tabs = [
+                { id: 'itinerary', label: 'План', icon: '<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' },
+                { id: 'velo', label: 'Вело', icon: '<path d="M13 10V3L4 14h7v7l9-11h-7z" />' },
+                { id: 'map', label: 'Карта', icon: '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />' },
+                { id: 'food', label: 'Еда', icon: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />' },
+                // { id: 'hotels', label: 'Сон', icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
+                { id: 'info', label: 'Инфо', icon: '<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />' }
+            ];
+            document.getElementById('mobile-bottom-nav').innerHTML = tabs.map(t =>
+                `<button onclick="switchView('${t.id}')" class="flex flex-col items-center justify-center w-full transition-colors ${
+                    currentState.view === t.id ? 'text-stone-900' : 'text-stone-400'
+                }">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${t.icon}</svg>
+                    <span class="text-[10px] font-bold">${t.label}</span>
+                </button>`
+            ).join('');
         }
 
-        function switchView(id) { currentState.view = id; renderDesktopNav(); renderMobileNav(); renderCurrentView(); window.scrollTo(0,0); }
+        function switchView(id) {
+            currentState.view = id;
+            currentState.searchQuery = '';
+            filteredItinerary = [...itinerary];
+            renderDesktopNav();
+            renderMobileNav();
+            renderCurrentView();
+            renderProgressBar();
+            writeUrlState();
+            window.scrollTo(0,0);
+        }
+
+        // Quick jump functions for day cards
+        function quickJumpTo(view, cityRef) {
+            if (view === 'food') {
+                currentState.view = 'food';
+                currentState.selectedFoodCityId = cityRef;
+            } else if (view === 'sights') {
+                currentState.view = 'sights';
+                currentState.selectedSightsCityId = cityRef;
+            }
+            renderDesktopNav();
+            renderMobileNav();
+            renderCurrentView();
+            writeUrlState();
+            window.scrollTo(0,0);
+        }
+
+        function quickJumpToMap(cityName) {
+            currentState.view = 'map';
+            renderDesktopNav();
+            renderMobileNav();
+            renderCurrentView();
+            writeUrlState();
+
+            // Focus on city marker after map loads
+            setTimeout(() => {
+                const cityCoords = mapLocations.find(loc => loc.name === cityName);
+                if (cityCoords && window.yandexMap) {
+                    window.yandexMap.setCenter(cityCoords.coords, 12, {
+                        duration: 500
+                    });
+                }
+            }, 500);
+        }
 
         function renderCurrentView() {
-            const el = document.getElementById('app-view'); el.innerHTML = '';
+            const el = document.getElementById('app-view');
+            el.innerHTML = '';
+
             if(currentState.view === 'itinerary') renderItinerary(el);
             if(currentState.view === 'map') renderMap(el);
             if(currentState.view === 'sights') renderListWithTabs(el, sightsIntel, currentState.selectedSightsCityId, (id)=>{currentState.selectedSightsCityId=id;renderCurrentView()}, renderSightsDetails, '⛩️');
             if(currentState.view === 'velo') renderVelo(el);
             if(currentState.view === 'food') renderListWithTabs(el, foodIntel, currentState.selectedFoodCityId, (id)=>{currentState.selectedFoodCityId=id;renderCurrentView()}, renderFoodDetails, '🍜');
-            if(currentState.view === 'hotels') renderListWithTabs(el, hotelIntel, currentState.selectedHotelCityId, (id)=>{currentState.selectedHotelCityId=id;renderCurrentView()}, renderHotelDetails, '🛏️');
+            // if(currentState.view === 'hotels') renderListWithTabs(el, hotelIntel, currentState.selectedHotelCityId, (id)=>{currentState.selectedHotelCityId=id;renderCurrentView()}, renderHotelDetails, '🛏️');
             if(currentState.view === 'info') renderInfo(el);
         }
 
         function renderItinerary(c) {
-            let h = `<div class="space-y-4 pb-20">`;
-            itinerary.forEach((i, idx) => {
+            const days = getDaysUntilTrip();
+
+            let h = `
+                <div class="space-y-4 pb-20">
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="stat-card" style="--from: #fef2f2; --to: #fee2e2;">
+                            <div class="text-2xl font-bold text-red-600">${days}</div>
+                            <div class="text-xs text-red-600">дней осталось</div>
+                        </div>
+                        <div class="stat-card" style="--from: #eff6ff; --to: #dbeafe;">
+                            <div class="text-2xl font-bold text-blue-600">14</div>
+                            <div class="text-xs text-blue-600">дней поездки</div>
+                        </div>
+                        <div class="stat-card" style="--from: #f0fdf4; --to: #dcfce7;">
+                            <div class="text-2xl font-bold text-green-600">4</div>
+                            <div class="text-xs text-green-600">базовых города</div>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="relative mb-4">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="🔍 Поиск по маршруту..."
+                            value="${currentState.searchQuery}"
+                            oninput="filterItinerary(this.value)"
+                            class="w-full px-4 py-3 rounded-lg border border-stone-200 search-input focus:ring-2 focus:ring-red-500 focus:border-transparent focus:outline-none transition-all bg-white"
+                        >
+                    </div>
+
+                    ${filteredItinerary.length === 0 ?
+                        `<div class="text-center py-8 text-stone-500">
+                            <div class="text-4xl mb-2">🔍</div>
+                            <div>Ничего не найдено</div>
+                        </div>` :
+                        ''
+                    }
+            `;
+
+            filteredItinerary.forEach((i, idx) => {
                 const badgeClass = i.type === 'base' ? 'badge-base' : 'badge-trip';
                 const badgeText = i.type === 'base' ? 'БАЗА' : 'ВЫЕЗД';
                 const cardClass = i.title.includes("Awaichi") || i.title.includes("308") ? "border-red-200 bg-red-50" : "border-stone-200 bg-white";
-                h += `<div class="flex gap-3 relative"><div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] bg-stone-200 z-0 ${idx === itinerary.length-1 ? 'hidden' : ''}"></div><div class="flex-shrink-0 z-10 text-center"><div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm"><div class="text-[10px] font-bold text-stone-600 leading-none"><div class="uppercase text-[8px] text-stone-400">${i.date}</div>${i.day.split('.')[0]}</div></div></div><div class="flex-grow ${cardClass} rounded-lg border p-3 shadow-sm"><div class="flex justify-between items-start mb-1"><div><span class="badge badge-time">${i.time}</span><h3 class="font-bold text-stone-900 text-sm inline">${i.title}</h3></div><span class="badge ${badgeClass}">${badgeText}</span></div><div class="text-[10px] text-stone-400 font-bold mb-1">📍 ${i.city}</div><p class="text-stone-600 text-xs mb-2 leading-relaxed">${i.desc}</p></div></div>`;
+
+                // Convert time to period of day
+                const timeOfDay = (() => {
+                    const t = i.time;
+                    if (t === 'Утро' || t === 'День' || t === 'Вечер') return t;
+                    const hour = parseInt(t.split(':')[0]);
+                    if (hour >= 6 && hour < 12) return '🌅 Утро';
+                    if (hour >= 12 && hour < 18) return '☀️ День';
+                    return '🌆 Вечер';
+                })();
+
+                h += `
+                    <div class="flex gap-3 relative">
+                        <div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] timeline-line z-0 ${idx === filteredItinerary.length-1 ? 'hidden' : ''}"></div>
+                        <div class="flex-shrink-0 z-10 text-center">
+                            <div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm day-marker">
+                                <div class="text-[10px] font-bold text-stone-600 leading-none">
+                                    <div class="uppercase text-[8px] text-stone-400">${i.date}</div>
+                                    ${i.day.split('.')[0]}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow ${cardClass} rounded-lg border p-3 shadow-sm card-hover">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="badge badge-time">${timeOfDay}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-bold">📍 ${i.city}</span>
+                                </div>
+                                <span class="badge ${badgeClass}">${badgeText}</span>
+                            </div>
+                            <h3 class="font-bold text-stone-900 text-base mb-2">${i.title}</h3>
+                            <p class="text-stone-600 text-xs leading-relaxed mb-3">${i.desc}</p>
+
+                            <!-- Quick Action Buttons -->
+                            <div class="flex gap-2 pt-2 border-t border-stone-200">
+                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('awaichi') ?
+                                    `<button onclick="showRouteDetailById('awaichi')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
+                                        🚴 Маршрут
+                                    </button>` : ''}
+                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('шиманами') ?
+                                    `<button onclick="showRouteDetailById('shimanami')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
+                                        🚴 Маршрут
+                                    </button>` : ''}
+                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('итосима') ?
+                                    `<button onclick="showRouteDetailById('itoshima')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
+                                        🚴 Маршрут
+                                    </button>` : ''}
+                                ${(i.city === 'Кобе' && i.title.includes('Горы')) || i.title.includes('308') ?
+                                    `<button onclick="showRouteDetailById('route308')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-red-50 text-red-700 hover:bg-red-100 transition-colors">
+                                        🚴 Route 308
+                                    </button>` : ''}
+                                <button onclick="quickJumpTo('food', '${i.food_ref}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors">
+                                    🍜 Еда
+                                </button>
+                                <button onclick="quickJumpTo('sights', '${i.sight_ref}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors">
+                                    ⛩️ Места
+                                </button>
+                                <button onclick="quickJumpToMap('${i.city}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors">
+                                    📍 Карта
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
+
             c.innerHTML = h + "</div>";
         }
 
         function renderMap(c) {
-            c.innerHTML = `<div class="h-full flex flex-col space-y-4"><div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm"><h2 class="font-bold text-lg">🗺️ Маршрут (General)</h2><p class="text-xs text-stone-500">Четкая структура с базами</p></div><div id="map-container" class="flex-grow shadow-md border border-stone-300 relative"></div></div>`;
+            c.innerHTML = `
+                <div class="h-full flex flex-col space-y-4">
+                    <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm">
+                        <h2 class="font-bold text-lg">🗺️ Маршрут (General)</h2>
+                        <p class="text-xs text-stone-500">Четкая структура с базами. Наведите на маркеры для деталей.</p>
+                    </div>
+                    <div id="map-container" class="flex-grow shadow-md border border-stone-300 relative"></div>
+                </div>
+            `;
             loadYandexMap('map-container');
         }
 
+        // ============================================
+        // 🚴 ROUTE DETAIL BOTTOM SHEET
+        // ============================================
+
+        function getAllRoutes() {
+            return veloPlan.groups.flatMap(g => g.routes);
+        }
+
+        function showRouteDetailById(routeId) {
+            const route = getAllRoutes().find(r => r.id === routeId);
+            if (!route) return showToast('Маршрут не найден', 'error');
+            showRouteDetail(route);
+        }
+
+        function showRouteDetail(route) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'bottom-sheet-overlay';
+            overlay.onclick = closeRouteDetail;
+
+            // Create bottom sheet
+            const sheet = document.createElement('div');
+            sheet.className = 'bottom-sheet';
+            sheet.id = 'route-detail-sheet';
+
+            // Difficulty color
+            const difficultyColor = route.difficulty === 'Легкая' ? 'text-green-600 bg-green-50' :
+                                   route.difficulty === 'Средняя' ? 'text-orange-600 bg-orange-50' :
+                                   'text-red-600 bg-red-50';
+
+            sheet.innerHTML = `
+                <div class="bottom-sheet-handle"></div>
+                <div class="px-6 pb-6">
+                    <!-- Header -->
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-stone-900 mb-1">${route.name}</h2>
+                            <p class="text-sm text-stone-600">${route.desc}</p>
+                        </div>
+                        <button onclick="closeRouteDetail()" class="p-2 hover:bg-stone-100 rounded-full transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Left Column: Info -->
+                        <div>
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <div class="text-xs text-blue-600 font-bold">Расстояние</div>
+                                    <div class="text-lg font-bold text-blue-900">${route.distance}</div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="text-xs text-purple-600 font-bold">Набор высоты</div>
+                                    <div class="text-lg font-bold text-purple-900">${route.elevation}</div>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded-lg">
+                                    <div class="text-xs text-green-600 font-bold">Продолжительность</div>
+                                    <div class="text-lg font-bold text-green-900">${route.duration}</div>
+                                </div>
+                                <div class="${difficultyColor} p-3 rounded-lg">
+                                    <div class="text-xs font-bold">Сложность</div>
+                                    <div class="text-lg font-bold">${route.difficulty}</div>
+                                </div>
+                            </div>
+
+                            <!-- Gradient -->
+                            <div class="bg-white border border-stone-200 rounded-lg p-4 mb-4">
+                                <h3 class="font-bold text-sm text-stone-900 mb-2">📈 Градиент</h3>
+                                <p class="text-sm text-stone-600">${route.gradient}</p>
+                            </div>
+
+                            <!-- Highlights -->
+                            <div class="mb-4">
+                                <h3 class="font-bold text-sm text-stone-900 mb-2">✨ Особенности</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    ${route.highlights.map(h => `<span class="tag-pill">${h}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Map -->
+                        <div class="flex flex-col">
+                            <div id="route-map-container" class="route-detail-map bg-stone-100 flex-1"></div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-3 mt-4">
+                        <a href="${route.mapLink}" target="_blank"
+                           class="flex-1 text-center bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                            Открыть в Google Maps
+                        </a>
+                        <button onclick="closeRouteDetail()"
+                                class="px-6 bg-stone-200 text-stone-700 font-bold rounded-lg hover:bg-stone-300 transition-colors">
+                            Закрыть
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+            document.body.appendChild(sheet);
+
+            // Trigger animations
+            setTimeout(() => {
+                overlay.classList.add('show');
+                sheet.classList.add('show');
+            }, 10);
+
+            // Initialize mini map
+            setTimeout(() => initRouteMap(route), 300);
+
+            showToast(`Маршрут: ${route.name}`, 'info');
+        }
+
+        function closeRouteDetail() {
+            const overlay = document.querySelector('.bottom-sheet-overlay');
+            const sheet = document.getElementById('route-detail-sheet');
+
+            if (overlay) {
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.remove(), 300);
+            }
+
+            if (sheet) {
+                sheet.classList.remove('show');
+                setTimeout(() => sheet.remove(), 300);
+            }
+        }
+
+        async function initRouteMap(route) {
+            const container = document.getElementById('route-map-container');
+            if (!container || !window.ymaps) return;
+
+            ymaps.ready(async () => {
+                const map = new ymaps.Map('route-map-container', {
+                    center: route.center,
+                    zoom: 11,
+                    controls: ['zoomControl']
+                });
+
+                // 1) Если есть track — рисуем сразу
+                if (Array.isArray(route.track) && route.track.length >= 2) {
+                    drawTrack(map, route.track, route.name);
+                    return;
+                }
+
+                // 2) Если есть GPX — грузим, парсим, рисуем
+                if (route.gpxUrl) {
+                    try {
+                        const coords = await loadGpxCoords(route.gpxUrl);
+                        if (coords.length >= 2) {
+                            drawTrack(map, coords, route.name);
+                            return;
+                        }
+                    } catch (e) {
+                        console.warn('GPX load/parse failed', e);
+                    }
+                }
+
+                // 3) Fallback — просто маркер
+                const placemark = new ymaps.Placemark(route.center, { balloonContent: route.name }, {
+                    preset: 'islands#blueDotIcon'
+                });
+                map.geoObjects.add(placemark);
+            });
+        }
+
+        function drawTrack(map, coords, name) {
+            const line = new ymaps.Polyline(coords, { hintContent: name }, {
+                strokeColor: "#e11d48",
+                strokeWidth: 4,
+                strokeOpacity: 0.9
+            });
+
+            map.geoObjects.add(line);
+
+            // Маркеры "старт/финиш"
+            const start = coords[0];
+            const end = coords[coords.length - 1];
+
+            map.geoObjects.add(new ymaps.Placemark(start, { iconCaption: 'Start' }, { preset: 'islands#greenDotIcon' }));
+            map.geoObjects.add(new ymaps.Placemark(end, { iconCaption: 'Finish' }, { preset: 'islands#redDotIcon' }));
+
+            // Подогнать карту под маршрут
+            const bounds = line.geometry.getBounds();
+            if (bounds) {
+                map.setBounds(bounds, { checkZoomRange: true, zoomMargin: 20 });
+            }
+        }
+
+        async function loadGpxCoords(url) {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`Failed to fetch GPX: ${res.status}`);
+            const text = await res.text();
+
+            const xml = new DOMParser().parseFromString(text, "application/xml");
+            const trkpts = Array.from(xml.getElementsByTagName("trkpt"));
+
+            // GPX хранит lat/lon в атрибутах, Yandex ждёт [lat, lon]
+            return trkpts
+                .map(p => [Number(p.getAttribute("lat")), Number(p.getAttribute("lon"))])
+                .filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon));
+        }
+
         function renderVelo(c) {
-            let h = `<div class="space-y-6 pb-20"><div class="bg-stone-50 border border-stone-200 p-4 rounded-xl"><h2 class="font-bold text-lg mb-2">🚴 Общие Маршруты</h2>${veloPlan.tips.map(t=>`<p class="text-xs text-stone-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}</div>`;
+            let h = `
+                <div class="space-y-6 pb-20">
+                    <div class="bg-stone-50 border border-stone-200 p-4 rounded-xl">
+                        <h2 class="font-bold text-lg mb-2">🚴 Общие Маршруты</h2>
+                        ${veloPlan.tips.map(t=>`<p class="text-xs text-stone-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}
+                    </div>
+            `;
+
             veloPlan.groups.forEach(g => {
-                h += `<div class="rounded-xl overflow-hidden shadow-sm mb-4"><div class="${g.color} p-3 font-bold text-sm">${g.name}</div><div class="bg-white border-x border-b border-stone-200 p-4 space-y-3">`;
-                g.routes.forEach(r => h += `<div><div class="flex justify-between items-baseline"><h4 class="font-bold text-sm text-stone-800">${r.name}</h4><span class="badge ${r.badge}">${r.badge.split('-')[1].toUpperCase()}</span></div><p class="text-xs text-stone-500 mt-1">${r.desc}</p></div>`);
+                h += `
+                    <div class="rounded-xl overflow-hidden shadow-sm mb-4">
+                        <div class="${g.color} p-3 font-bold text-sm">${g.name}</div>
+                        <div class="bg-white border-x border-b border-stone-200 p-4 space-y-3">
+                `;
+                g.routes.forEach(r => h += `
+                    <div class="card-hover p-2 rounded-lg cursor-pointer" onclick="showRouteDetailById('${r.id}')">
+                        <div class="flex justify-between items-baseline">
+                            <h4 class="font-bold text-sm text-stone-800">${r.name}</h4>
+                            <span class="badge ${r.badge}">${r.badge.split('-')[1].toUpperCase()}</span>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-1">${r.desc}</p>
+                    </div>
+                `);
                 h += `</div></div>`;
             });
+
             c.innerHTML = h + "</div>";
         }
 
         function renderListWithTabs(c, data, sid, cb, rend, icon) {
-             let h=`<div class="flex flex-col md:flex-row gap-4 md:gap-6 h-full pb-20"><div class="sticky top-14 md:top-0 z-30 bg-[#fcfbf9] pt-2 pb-2 md:w-1/4"><div class="md:hidden flex overflow-x-auto hide-scroll gap-2 pb-1">${data.map(i=>`<button onclick="window.upSel('${i.id}')" class="flex-shrink-0 px-4 py-2 rounded-full border text-xs font-bold whitespace-nowrap transition-all ${sid===i.id?'bg-stone-900 text-white':'bg-white text-stone-600 border-stone-200'}">${i.city}</button>`).join('')}</div><div class="hidden md:flex flex-col gap-2">${data.map(i=>`<button onclick="window.upSel('${i.id}')" class="text-left px-4 py-3 rounded-lg border transition-all ${sid===i.id?'bg-stone-900 text-white':'bg-white text-stone-600 hover:bg-stone-50'}"><span class="font-bold text-sm">${i.city}</span></button>`).join('')}</div></div><div class="w-full md:w-3/4">${rend(data.find(x=>x.id===sid), icon)}</div></div>`;
-             c.innerHTML=h; window.upSel=cb;
+            let h = `
+                <div class="flex flex-col md:flex-row gap-4 md:gap-6 h-full pb-20">
+                    <div class="sticky top-14 md:top-0 z-30 bg-[#fcfbf9] pt-2 pb-2 md:w-1/4">
+                        <div class="md:hidden flex overflow-x-auto hide-scroll gap-2 pb-1">
+                            ${data.map(i=>`
+                                <button onclick="window.upSel('${i.id}')"
+                                    class="flex-shrink-0 px-4 py-2 rounded-full border text-xs font-bold whitespace-nowrap transition-all ${
+                                        sid===i.id ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                                    }">
+                                    ${i.city}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="hidden md:flex flex-col gap-2">
+                            ${data.map(i=>`
+                                <button onclick="window.upSel('${i.id}')"
+                                    class="text-left px-4 py-3 rounded-lg border transition-all ${
+                                        sid===i.id ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 hover:bg-stone-50'
+                                    }">
+                                    <span class="font-bold text-sm">${i.city}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="w-full md:w-3/4">${rend(data.find(x=>x.id===sid), icon)}</div>
+                </div>
+            `;
+            c.innerHTML = h;
+            window.upSel = cb;
         }
 
-        function renderSightsDetails(c,i) { return `<div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in"><div class="bg-stone-100 p-4 border-b border-stone-200"><h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">${c.city} <span class="opacity-20">${i}</span></h2></div><div class="divide-y divide-stone-100">${c.places.map(p=>`<div class="p-4"><div class="flex justify-between items-start mb-1"><h3 class="font-bold text-base text-stone-900">${p.name}</h3><span class="badge ${p.badge}">${p.type}</span></div><p class="text-stone-600 text-xs mb-2">${p.detail}</p><a href="https://yandex.ru/maps/?text=${p.name} ${c.city}" target="_blank" class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded inline-block">📍 На карте</a></div>`).join('')}</div></div>`; }
-        function renderFoodDetails(c,i) { return `<div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in"><div class="bg-stone-100 p-4 border-b border-stone-200"><h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">${c.city} <span class="opacity-20">${i}</span></h2></div><div class="divide-y divide-stone-100">${c.places.map(p=>`<div class="p-4"><div class="flex justify-between items-start"><h3 class="font-bold text-stone-900">${p.name}</h3><span class="text-xs bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-bold">${p.dish}</span></div><p class="text-stone-600 text-xs mt-1 italic mb-2">"${p.why}"</p><div class="flex justify-between items-center"><a href="https://yandex.ru/maps/?text=${p.name} ${c.city}" target="_blank" class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded">📍 На карте</a></div></div>`).join('')}</div></div>`; }
-        function renderHotelDetails(c,i) { 
+        function renderSightsDetails(c, i) {
             return `
-            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
-                <div class="bg-stone-100 p-4 border-b border-stone-200">
-                    <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">${c.city} <span class="opacity-20">${i}</span></h2>
-                    <p class="text-xs text-stone-600 mt-1 italic">${c.desc}</p>
-                </div>
-                <div class="divide-y divide-stone-100">
-                    ${c.places.map(p=>`
-                        <div class="p-4">
-                            <div class="flex justify-between items-start mb-1">
-                                <h3 class="font-bold text-stone-900">${p.name}</h3>
-                                <span class="badge ${p.badge}">${p.type}</span>
+                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
+                    <div class="bg-stone-100 p-4 border-b border-stone-200">
+                        <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+                            ${c.city} <span class="opacity-20">${i}</span>
+                        </h2>
+                    </div>
+                    <div class="divide-y divide-stone-100">
+                        ${c.places.map(p=>`
+                            <div class="p-4 card-hover">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-bold text-base text-stone-900">${p.name}</h3>
+                                    <span class="badge ${p.badge}">${p.type}</span>
+                                </div>
+                                <p class="text-stone-600 text-xs mb-2">${p.detail}</p>
+                                <a href="https://yandex.ru/maps/?text=${encodeURIComponent(p.name + ' ' + c.city)}"
+                                   target="_blank"
+                                   class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded inline-block hover:bg-blue-100 transition-colors">
+                                   📍 На карте
+                                </a>
                             </div>
-                            <p class="text-stone-600 text-xs mt-1 leading-relaxed">"${p.why}"</p>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs font-mono text-stone-500 bg-stone-50 px-2 py-1 rounded">${p.price}</span>
-                                <a href="https://www.booking.com/searchresults.ru.html?ss=${p.name} ${c.city}" target="_blank" class="text-[10px] text-white font-bold bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition-colors shadow-sm">Booking.com &rarr;</a>
-                            </div>
-                        </div>
-                    `).join('')}
+                        `).join('')}
+                    </div>
                 </div>
-            </div>`; 
+            `;
+        }
+
+        function renderFoodDetails(c, i) {
+            return `
+                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
+                    <div class="bg-stone-100 p-4 border-b border-stone-200">
+                        <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+                            ${c.city} <span class="opacity-20">${i}</span>
+                        </h2>
+                    </div>
+                    <div class="divide-y divide-stone-100">
+                        ${c.places.map(p=>`
+                            <div class="p-4 card-hover">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-bold text-stone-900">${p.name}</h3>
+                                    <span class="text-xs bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-bold">${safe(p.dish,'')}</span>
+                                </div>
+                                ${p.why ? `<p class="text-stone-600 text-xs mt-1 italic mb-2">"${p.why}"</p>` : ``}
+                                ${p.tags?.length ? `<div class="flex flex-wrap gap-2 mb-2">${p.tags.map(t=>`<span class="tag-pill">${t}</span>`).join('')}</div>` : ``}
+                                ${p.url ? `<a href="${p.url}" target="_blank" class="text-[10px] text-stone-700 font-bold border border-stone-200 bg-stone-50 px-2 py-1 rounded inline-block mr-2 hover:bg-stone-100 transition-colors">🔗 Сайт</a>` : ``}
+                                <a href="https://yandex.ru/maps/?text=${encodeURIComponent(p.name+' '+c.city)}"
+                                   target="_blank"
+                                   class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded inline-block hover:bg-blue-100 transition-colors">
+                                   📍 На карте
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // TEMPORARILY DISABLED - Hotels tab
+        // function renderHotelDetails(c, i) {
+        //     return `
+        //         <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
+        //             <div class="bg-stone-100 p-4 border-b border-stone-200">
+        //                 <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+        //                     ${c.city} <span class="opacity-20">${i}</span>
+        //                 </h2>
+        //                 <p class="text-xs text-stone-600 mt-1 italic">${c.desc}</p>
+        //             </div>
+        //             <div class="divide-y divide-stone-100">
+        //                 ${c.places.map(p=>`
+        //                     <div class="p-4 card-hover">
+        //                         <div class="flex justify-between items-start mb-1">
+        //                             <h3 class="font-bold text-stone-900">${p.name}</h3>
+        //                             <span class="badge ${p.badge}">${p.type}</span>
+        //                         </div>
+        //                         <p class="text-stone-600 text-xs mt-1 leading-relaxed">"${p.why}"</p>
+        //                         <div class="flex justify-between items-center mt-3">
+        //                             <span class="text-xs font-mono text-stone-500 bg-stone-50 px-2 py-1 rounded">${p.price}</span>
+        //                             <a href="https://www.booking.com/searchresults.ru.html?ss=${encodeURIComponent(p.name + ' ' + c.city)}"
+        //                                target="_blank"
+        //                                class="text-[10px] text-white font-bold bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition-colors shadow-sm">
+        //                                Booking.com &rarr;
+        //                             </a>
+        //                         </div>
+        //                     </div>
+        //                 `).join('')}
+        //             </div>
+        //         </div>
+        //     `;
+        // }
+
+        function renderChecklistBlock() {
+            const urgent = (x) => x.urgent ? 'border-red-200 bg-red-50' : 'border-stone-200 bg-white';
+            return `
+                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                    <div class="bg-stone-100 p-4 border-b border-stone-200">
+                        <h3 class="font-bold text-stone-900">✅ Чеклист</h3>
+                        <p class="text-xs text-stone-600 mt-1">Сохраняется локально в браузере</p>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        ${checklist.map(item => `
+                            <label class="flex items-center gap-3 p-3 rounded-lg border ${urgent(item)} cursor-pointer hover:shadow-sm transition-all card-hover">
+                                <input type="checkbox" ${item.done ? 'checked' : ''} data-id="${item.id}" class="w-4 h-4 cursor-pointer">
+                                <div class="flex-1">
+                                    <div class="font-bold text-sm ${item.done ? 'line-through text-stone-400' : 'text-stone-800'}">${item.text}</div>
+                                    ${item.note ? `<div class="text-xs text-stone-500 mt-1">${item.note}</div>` : ``}
+                                </div>
+                                ${item.urgent ? `<span class="badge badge-time badge-urgent">URGENT</span>` : ``}
+                            </label>
+                        `).join('')}
+                        <button id="add-check-item" class="w-full mt-2 text-sm font-bold bg-stone-900 text-white py-2 rounded-lg hover:bg-stone-800 transition-colors">
+                            + Добавить
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function bindChecklistHandlers(root=document) {
+            qsa('input[type="checkbox"][data-id]', root).forEach(ch => {
+                ch.addEventListener('change', (e) => {
+                    const id = Number(e.target.getAttribute('data-id'));
+                    checklist = checklist.map(x => x.id === id ? {...x, done: e.target.checked} : x);
+                    saveChecklist(checklist);
+                    showToast(e.target.checked ? 'Задача выполнена ✓' : 'Отмена выполнения', 'success');
+                });
+            });
+
+            const addBtn = qs('#add-check-item', root);
+            if (addBtn) addBtn.addEventListener('click', () => {
+                const text = prompt('Новый пункт чеклиста:');
+                if (!text) return;
+                const id = Math.max(0, ...checklist.map(x => x.id)) + 1;
+                checklist = [{ id, text, done:false, urgent:false }, ...checklist];
+                saveChecklist(checklist);
+                renderCurrentView();
+                showToast('Пункт добавлен!', 'success');
+            });
         }
 
         function renderInfo(c) {
             c.innerHTML = `
-            <div class="space-y-6 pb-20">
-                <div class="segmented-control sticky top-0 z-20">
-                    <button onclick="changeInfo('logistics')" class="segment-btn ${currentState.infoSubTab==='logistics'?'segment-active':''}">Логистика</button>
-                    <button onclick="changeInfo('budget')" class="segment-btn ${currentState.infoSubTab==='budget'?'segment-active':''}">Бюджет</button>
+                <div class="space-y-6 pb-20">
+                    <div id="info-content">${getInfoHTML()}</div>
                 </div>
-                <div id="info-content">${getInfoHTML()}</div>
-            </div>`;
-            if(currentState.infoSubTab==='budget') setTimeout(initChart, 100);
+            `;
+            setTimeout(() => bindChecklistHandlers(document.getElementById('app-view')), 0);
         }
 
-        function changeInfo(tab) { currentState.infoSubTab = tab; renderInfo(document.getElementById('app-view')); }
+        function changeInfo(tab) {
+            currentState.infoSubTab = tab;
+            renderInfo(document.getElementById('app-view'));
+            writeUrlState();
+        }
 
         function getInfoHTML() {
-            if(currentState.infoSubTab === 'logistics') return `<div class="space-y-3">${logisticsData.map(l=>`<div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm"><h3 class="font-bold">${l.icon} ${l.title}</h3><p class="text-sm mt-1">${l.detail}</p>${l.vital?`<div class="mt-2 text-xs text-red-600 font-bold bg-red-50 p-2 rounded">${l.vital}</div>`:''}</div>`).join('')}</div>`;
-            return `<div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm"><canvas id="budgetChart"></canvas><div class="text-center mt-4 font-bold text-xl">~¥405,000</div><p class="text-center text-xs text-stone-500">на 1 чел</p></div>`;
-        }
-
-        function initChart() {
-            new Chart(document.getElementById('budgetChart'), {
-                type: 'doughnut',
-                data: { labels: budgetData.labels, datasets: [{ data: budgetData.data, backgroundColor: ['#e7e5e4','#f97316','#047857','#d6d3d1'], borderWidth:0 }] },
-                options: { plugins: { legend: { position: 'bottom' } } }
-            });
+            return `
+                <div class="space-y-3">
+                    ${logisticsData.map(l=>`
+                        <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm card-hover">
+                            <h3 class="font-bold">${l.icon} ${l.title}</h3>
+                            <p class="text-sm mt-1">${l.detail}</p>
+                            ${l.vital?`<div class="mt-2 text-xs text-red-600 font-bold bg-red-50 p-2 rounded">${l.vital}</div>`:''}
+                        </div>
+                    `).join('')}
+                    ${renderChecklistBlock()}
+                </div>
+            `;
         }
 
         window.upSel = (id) => {
-            if (currentState.view === 'hotels') currentState.selectedHotelCityId = id;
-            else if (currentState.view === 'sights') currentState.selectedSightsCityId = id;
+            // if (currentState.view === 'hotels') currentState.selectedHotelCityId = id;
+            if (currentState.view === 'sights') currentState.selectedSightsCityId = id;
             else currentState.selectedFoodCityId = id;
             renderCurrentView();
+            writeUrlState();
         };
+
+        function init() {
+            applyTheme();
+            readUrlState();
+            loadYandexMap('map-container');
+            renderDesktopNav();
+            renderMobileNav();
+            renderCurrentView();
+            renderProgressBar();
+            window.addEventListener('popstate', () => {
+                readUrlState();
+                renderDesktopNav();
+                renderMobileNav();
+                renderCurrentView();
+                renderProgressBar();
+            });
+
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('🗾 Добро пожаловать в планировщик Японии 2026!', 'info');
+            }, 500);
+        }
 
         init();
     </script>
