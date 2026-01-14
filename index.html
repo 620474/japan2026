@@ -957,11 +957,12 @@
                 return placemark;
             }
 
-            const coords = mapLocations.map(l => l.coords);
-            map.geoObjects.add(new ymaps.Polyline(coords, {}, {
-                strokeColor: "#e11d48",
-                strokeWidth: 4
-            }));
+            // Route line removed - only city markers
+            // const coords = mapLocations.map(l => l.coords);
+            // map.geoObjects.add(new ymaps.Polyline(coords, {}, {
+            //     strokeColor: "#e11d48",
+            //     strokeWidth: 4
+            // }));
 
             mapLocations.forEach(l => {
                 const placemark = makePlacemark({
