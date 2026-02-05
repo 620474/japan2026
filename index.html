@@ -631,21 +631,28 @@
 
         // ================= DATA =================
 
+        // New unified itinerary based on detailed plans
         const itinerary = [
-            { day: "15.04", date: "Ср", city: "Осака", title: "Прибытие", time: "День", type: "base", desc: "Прилет 11:45. База: Осака (3 ночи). Сборка велосипедов. Вечерний Дотонбори.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-1" },
-            { day: "16.04", date: "Чт", city: "Авадзи", title: "Awaichi", time: "06:00", type: "trip", desc: "Велосипедный день на острове Авадзи. Круговой маршрут (150км) или прогулочный по северу.", food_ref: "kobe", sight_ref: "velo", hotel_ref: "osaka", imgClass: "img-placeholder-2" },
-            { day: "17.04", date: "Пт", city: "Кобе", title: "Порт и Горы", time: "08:00", type: "trip", desc: "Радиальный выезд. Водопады Нунобики, гора Рокко, набережная. Обед с мясом Кобе.", food_ref: "kobe", sight_ref: "kobe", hotel_ref: "osaka", imgClass: "img-placeholder-3" },
-            { day: "18.04", date: "Сб", city: "Киото", title: "Переезд", time: "Утро", type: "base", desc: "Поезд в Киото. База: Киото (3 ночи). Вечерний Гион и Понтотё.", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto", imgClass: "img-placeholder-4" },
-            { day: "19.04", date: "Вс", city: "Киото", title: "Вело-день", time: "07:00", type: "base", desc: "Поездка на север к горам или на восток к озеру Бива.", food_ref: "biwa", sight_ref: "velo", hotel_ref: "kyoto", imgClass: "img-placeholder-5" },
-            { day: "20.04", date: "Пн", city: "Киото", title: "Культура", time: "День", type: "base", desc: "Пеший день. Золотой павильон, Сад камней, Бамбуковая роща (Арасияма).", food_ref: "kyoto", sight_ref: "kyoto", hotel_ref: "kyoto", imgClass: "img-placeholder-6" },
-            { day: "21.04", date: "Вт", city: "Фукуока", title: "Кюсю", time: "Утро", type: "base", desc: "Активация Пасса. Синкансэн. База: Фукуока (3 ночи). Замок, Рынок Танга.", food_ref: "fukuoka", sight_ref: "fukuoka", hotel_ref: "kokura", imgClass: "img-placeholder-4" },
-            { day: "22.04", date: "Ср", city: "Фукуока", title: "Гастрономия", time: "10:00", type: "base", desc: "Хаката - рамен, шопинг, Ятай. Прогулка по городу.", food_ref: "fukuoka", sight_ref: "fukuoka", hotel_ref: "kokura", imgClass: "img-placeholder-5" },
-            { day: "23.04", date: "Чт", city: "Итосима", title: "Океан", time: "09:00", type: "trip", desc: "Велосипедная прогулка вдоль побережья (Sunset Road).", food_ref: "fukuoka", sight_ref: "velo", hotel_ref: "kokura", imgClass: "img-placeholder-6" },
-            { day: "24.04", date: "Пт", city: "Хиросима", title: "Запад", time: "Утро", type: "base", desc: "Синкансэн в Хиросиму. База: Хиросима (3 ночи). Парк Мира.", food_ref: "hiroshima", sight_ref: "hiroshima", hotel_ref: "hiroshima", imgClass: "img-placeholder-1" },
-            { day: "25.04", date: "Сб", city: "Миядзима", title: "Остров", time: "День", type: "trip", desc: "Паром. Храм Ицукусима. Хайкинг на гору Мисэн.", food_ref: "miyajima", sight_ref: "miyajima", hotel_ref: "hiroshima", imgClass: "img-placeholder-2" },
-            { day: "26.04", date: "Вс", city: "Ономити", title: "Шиманами", time: "07:00", type: "trip", desc: "Велосипедный день: Шиманами Кайдо (через мосты).", food_ref: "onomichi", sight_ref: "velo", hotel_ref: "hiroshima", imgClass: "img-placeholder-3" },
-            { day: "27.04", date: "Пн", city: "Осака", title: "Возврат", time: "Утро", type: "base", desc: "Синкансэн Хиросима -> Осака. Финальная база (2 ночи). Упаковка.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-1" },
-            { day: "28.04", date: "Вт", city: "Вылет", title: "Домой", time: "18:10", type: "base", desc: "Трансфер в аэропорт KIX.", food_ref: "osaka", sight_ref: "osaka", hotel_ref: "osaka", imgClass: "img-placeholder-2" }
+            // Осака (15-18)
+            { day: "15", date: "Ср", month: "04", city: "Осака", title: "Прибытие", type: "base", desc: "Прилет 11:45. Сборка велосипедов. Вечерний Дотонбори.", details: null },
+            { day: "16", date: "Чт", month: "04", city: "Осака", title: "Южная Осака, рынки и граффити", type: "trip", desc: "Kuromon, Sumiyoshi Taisha, Kitakagaya Art, Синсэкай, Америка-мура.", details: "osaka-0" },
+            { day: "17", date: "Пт", month: "04", city: "Кобе", title: "Велопробег в Кобе", type: "trip", desc: "35-40 км до Кобе. Чайнатаун, порт, Kitano. Обратно вело или поезд.", details: "osaka-1" },
+            { day: "18", date: "Сб", month: "04", city: "Осака → Киото", title: "Центральная Осака + переезд", type: "base", desc: "Замок Осака, Монетный двор (сакура), Тэнма, Накадзаки-чо. Вечером поезд в Киото.", details: "osaka-2" },
+            // Киото (18-21)
+            { day: "18", date: "Сб", month: "04", city: "Киото", title: "Гион и Хигасияма", type: "base", desc: "Киёмидзу-дэра, парк Мэруяма, река Камо, Понтё-тё.", details: "kyoto-0" },
+            { day: "19", date: "Вс", month: "04", city: "Киото", title: "Арасияма и природа", type: "base", desc: "Бамбуковая роща, мост Тогэцукё, парк обезьян, онсэн.", details: "kyoto-1" },
+            { day: "20", date: "Пн", month: "04", city: "Киото", title: "Северный Киото + Философский путь", type: "base", desc: "Кинкаку-дзи, Рёандзи, Гинкакудзи, Философский путь.", details: "kyoto-2" },
+            // Фукуока (21-24)
+            { day: "21", date: "Вт", month: "04", city: "Фукуока", title: "Приезд + Парки и рамен", type: "base", desc: "Синкансэн из Киото. Парк Маидзуру, Y's Road, рамен ShinShin.", details: "fukuoka-0" },
+            { day: "22", date: "Ср", month: "04", city: "Фукуока", title: "Побережье Munakata-Shikanoshima", type: "trip", desc: "51 км вело. Святилище Мунаката, остров Шиканосима.", details: "fukuoka-1" },
+            { day: "23", date: "Чт", month: "04", city: "Итосима", title: "Итосима и онсэн", type: "trip", desc: "30 км вело. Скалы Futamigaura, морская дорога, онсэн Kirara-no-Yu.", details: "fukuoka-2" },
+            // Хиросима (24-27)
+            { day: "24", date: "Пт", month: "04", city: "Хиросима", title: "Приезд + История", type: "base", desc: "Синкансэн из Фукуоки. Peace Memorial Park, рамен Youki.", details: "hiroshima-0" },
+            { day: "25", date: "Сб", month: "04", city: "Миядзима", title: "Хайкинг: Miyajima + Mt. Misen", type: "trip", desc: "Храм Ицукусима, плавающие тории, хайк на гору Мисэн.", details: "hiroshima-1" },
+            { day: "26", date: "Вс", month: "04", city: "Ономити", title: "Велодень: Shimanami Kaido", type: "trip", desc: "50-70 км. Мосты через острова. ONOMICHI U2, Grumpy Bike Shop.", details: "hiroshima-2" },
+            // Финал
+            { day: "27", date: "Пн", month: "04", city: "Осака", title: "Возвращение", type: "base", desc: "Синкансэн Хиросима → Осака. Финальная база.", details: null },
+            { day: "28", date: "Вт", month: "04", city: "Осака", title: "Вылет", type: "base", desc: "Трансфер в аэропорт KIX. 18:10.", details: null }
         ];
 
         const mapLocations = [
@@ -794,12 +801,245 @@
             { id: "hiroshima", city: "Хиросима", places: [{name: "Peace Park", type: "History", badge: "badge-history", detail: "Музей."}, {name: "Miyajima", type: "Nature", badge: "badge-trek", detail: "Гора Мисэн."}] }
         ];
 
-        const hotelIntel = [
-            { id: "osaka", city: "Осака", desc: "База 1 & Финал.", places: [{name:"Onyado Nono", type:"Onsen", badge:"badge-onsen", price:"¥¥", why:"Татами."}, {name:"The Lively", type:"Vibe", badge:"badge-vibe", price:"¥¥¥", why:"Стиль."}] },
-            { id: "kyoto", city: "Киото", desc: "База 2.", places: [{name:"Piece Hostel Sanjo", type:"Velo", badge:"badge-local", price:"¥", why:"Для вело."}] },
-            { id: "hiroshima", city: "Хиросима", desc: "База 3.", places: [{name:"Kiro", type:"Design", badge:"badge-design", price:"¥¥", why:"Хипстерский."}, {name:"The Knot", type:"Rooftop", badge:"badge-vibe", price:"¥¥", why:"Вид."}] },
-            { id: "kokura", city: "Кокура", desc: "База 4.", places: [{name:"JR Kyushu Hotel", type:"Station", badge:"badge-tech", price:"¥¥", why:"Прямо в вокзале."}, {name:"Tanga Table", type:"Hostel", badge:"badge-vibe", price:"¥", why:"Над рынком."}] }
+        const accommodations = [
+            { 
+                id: "osaka", 
+                city: "Осака", 
+                dates: "15-18.04 & 27-28.04",
+                desc: "База 1 (3 ночи) + Финал (1 ночь)", 
+                status: "pending",
+                coords: [34.6937, 135.5023],
+                booking: null
+            },
+            { 
+                id: "kyoto", 
+                city: "Киото", 
+                dates: "18-21.04",
+                desc: "База 2 (3 ночи)", 
+                status: "booked",
+                coords: [34.9987, 135.7780],
+                booking: {
+                    name: "Таунхаус в Хигасияма-ку",
+                    type: "Таунхаус",
+                    badge: "badge-local",
+                    rating: "4.86",
+                    rooms: "2 спальни",
+                    beds: "9 кроватей",
+                    bath: "1,5 ванной",
+                    link: "https://www.airbnb.ru/rooms/1197837020382401498",
+                    district: "Хигасияма-ку",
+                    photo: "https://a0.muscache.com/im/pictures/hosting/Hosting-1197837020382401498/original/7c6a8e6e-8c1a-4e8a-9c1a-4e8a9c1a4e8a.jpeg"
+                }
+            },
+            { 
+                id: "kokura", 
+                city: "Фукуока / Кокура", 
+                dates: "21-24.04",
+                desc: "База 3 (3 ночи)", 
+                status: "booked",
+                coords: [33.5903, 130.4181],
+                booking: {
+                    name: "Дом в Хаката-ку",
+                    type: "Дом",
+                    badge: "badge-vibe",
+                    rating: "4.64",
+                    rooms: "4 спальни",
+                    beds: "4 кровати",
+                    bath: "1 ванная",
+                    link: "https://www.airbnb.ru/rooms/50755487",
+                    district: "Хаката-ку",
+                    photo: "https://a0.muscache.com/im/pictures/miso/Hosting-50755487/original/a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpeg"
+                }
+            },
+            { 
+                id: "hiroshima", 
+                city: "Хиросима", 
+                dates: "24-27.04",
+                desc: "База 4 (3 ночи)", 
+                status: "booked",
+                coords: [34.3963, 132.4467],
+                booking: {
+                    name: "Жильё в Ниси",
+                    type: "Жильё",
+                    badge: "badge-design",
+                    rating: "4.89",
+                    rooms: "4 спальни",
+                    beds: "7 кроватей",
+                    bath: "1,5 ванной",
+                    link: "https://www.airbnb.ru/rooms/1347366679538438479",
+                    district: "Ниси-ку",
+                    photo: "https://a0.muscache.com/im/pictures/hosting/Hosting-1347366679538438479/original/12345678-abcd-efgh-ijkl-mnopqrstuvwx.jpeg"
+                }
+            }
         ];
+
+        // ============================================
+        // 📋 DETAILED DAILY PLANS
+        // ============================================
+        const detailedPlans = {
+            osaka: {
+                city: "Осака",
+                dates: "15-18 апреля",
+                days: [
+                    {
+                        date: "16 апреля",
+                        title: "Южная Осака, рынки и граффити",
+                        distance: "~20 км вело + 8-10 км пешком",
+                        items: [
+                            { time: "08:00-09:00", title: "Рынок Kuromon Ichiba", desc: "Завтрак на знаменитом рынке. Суши, сашими, устрицы, тако-яки от Takoyaki Wanaka.", type: "food", coords: [34.6628, 135.5058] },
+                            { time: "09:30-11:00", title: "Святилище Sumiyoshi Taisha", desc: "7 км на юг. Древнейший храм III века, красный мост Taiko-bashi.", type: "sight", coords: [34.6128, 135.4928] },
+                            { time: "11:00-12:30", title: "Kitakagaya Art District", desc: "3 км. Квартал стрит-арта, муралы Ben Eine, галереи Chidori-Bunka.", type: "art", coords: [34.6283, 135.4683] },
+                            { time: "13:00-14:30", title: "Синсэкай + башня Tsūtenkaku", desc: "4 км. Ретро-район, кушикацу в Daruma, ретро-игры Smartball.", type: "sight", coords: [34.6525, 135.5063] },
+                            { time: "15:00-17:00", title: "Америка-мура", desc: "2 км. Молодёжная культура, граффити Peace on Earth, винтаж.", type: "art", coords: [34.6722, 135.4997] },
+                            { time: "18:00-21:00", title: "Вечер в Намба", desc: "Рамен Ryukishin RIZE или Hanamaruken, прогулка по Дотонбори.", type: "food", coords: [34.6687, 135.5013] }
+                        ]
+                    },
+                    {
+                        date: "17 апреля",
+                        title: "Велопробег в Кобе",
+                        distance: "~80 км (туда-обратно) или 40 км + поезд",
+                        items: [
+                            { time: "07:30-11:30", title: "Осака → Кобе", desc: "35-40 км по трассе №2. Остановка в Нисиномия, музей саке Hakutsuru.", type: "velo", coords: [34.6901, 135.1955] },
+                            { time: "12:00-14:00", title: "Чайнатаун Нанкинмати", desc: "Сяолунбао, маньтоу, уличная еда. Альтернатива: Ramen Kai (цукэмен с нибоси).", type: "food", coords: [34.6878, 135.1783] },
+                            { time: "14:00-16:30", title: "Порт Кобе", desc: "Meriken Park, BE KOBE, Harborland, колесо обозрения, Kitano Ijinkan.", type: "sight", coords: [34.6833, 135.1867] },
+                            { time: "17:00-20:30", title: "Возвращение + онсэн", desc: "Обратно вело или поезд Hanshin. Spa World или Naniwa no Yu.", type: "relax", coords: [34.6525, 135.5063] }
+                        ]
+                    },
+                    {
+                        date: "18 апреля",
+                        title: "Центральная и северная Осака",
+                        distance: "~25 км вело + 5-7 км пешком",
+                        items: [
+                            { time: "09:00-11:00", title: "Замок Осака", desc: "5 км. Парк с сакурой, музей в замке, сад Nishinomaru.", type: "sight", coords: [34.6873, 135.5262] },
+                            { time: "11:00-12:30", title: "Монетный двор (Sakura no Torinuke)", desc: "2 км. 560м аллея из 350 деревьев сакуры (11-17 апреля).", type: "nature", coords: [34.6917, 135.5183] },
+                            { time: "13:00-14:30", title: "Тэнма + Тэндзинбаши-судзи", desc: "Самая длинная торговая галерея (2.6 км). Окономияки в Ajinoya.", type: "food", coords: [34.7033, 135.5117] },
+                            { time: "15:00-17:00", title: "Накадзаки-чо", desc: "2 км. Хипстерский квартал, винтаж, кафе в старых домах.", type: "art", coords: [34.7083, 135.5067] },
+                            { time: "17:30-19:30", title: "Umeda Sky Building", desc: "Закат с высоты 173м. Рамен Kadoya Shokudo или Butakin.", type: "sight", coords: [34.7050, 135.4900] }
+                        ]
+                    }
+                ]
+            },
+            kyoto: {
+                city: "Киото",
+                dates: "18-21 апреля (выезд утром 21)",
+                days: [
+                    {
+                        date: "18 апреля",
+                        title: "Гион и Хигасияма",
+                        distance: "~5 км пешком",
+                        items: [
+                            { time: "Утро", title: "Киёмидзу-дэра", desc: "Деревянный храм на холме. Подъём по Нинен-дзака/Саннен-дзака.", type: "sight", coords: [34.9949, 135.7850] },
+                            { time: "День", title: "Парк Мэруяма + Ясака", desc: "Главный парк сакуры с гигантской плакучей вишней. Вечерняя подсветка.", type: "nature", coords: [35.0036, 135.7808] },
+                            { time: "Вечер", title: "Река Камо + Понтё-тё", desc: "Прогулка вдоль реки, старинная аллея ресторанов.", type: "food", coords: [35.0050, 135.7700] },
+                            { time: "Ужин", title: "Menya Inoichi", desc: "Michelin-рамен с бульоном из морепродуктов.", type: "food", coords: [35.0033, 135.7683] }
+                        ]
+                    },
+                    {
+                        date: "19 апреля",
+                        title: "Арасияма и природа",
+                        distance: "~16 км вело",
+                        items: [
+                            { time: "Утро", title: "Бамбуковая роща", desc: "8 км от центра. Знаменитая аллея высоких бамбуков.", type: "nature", coords: [35.0168, 135.6713] },
+                            { time: "День", title: "Мост Тогэцукё + река Хозу", desc: "Фотогеничный деревянный мост, вид на холмы.", type: "sight", coords: [35.0142, 135.6778] },
+                            { time: "День", title: "Парк обезьян Иватаяма", desc: "15-20 мин подъём, панорама Киото, макаки.", type: "nature", coords: [35.0108, 135.6742] },
+                            { time: "Полдень", title: "Онсэн Arashiyama", desc: "Sagano Onsen Tenzanoyu — хлоридные источники.", type: "relax", coords: [35.0183, 135.6817] }
+                        ]
+                    },
+                    {
+                        date: "20 апреля",
+                        title: "Северный Киото + Философский путь",
+                        distance: "~15 км вело/пешком",
+                        items: [
+                            { time: "Утро", title: "Кинкаку-дзи (Золотой павильон)", desc: "Золотой павильон на пруду.", type: "sight", coords: [35.0394, 135.7292] },
+                            { time: "День", title: "Рёандзи + Нинна-дзи", desc: "Каменный сад. Омуро-сакура — цветёт позже обычной.", type: "sight", coords: [35.0345, 135.7183] },
+                            { time: "День", title: "Гинкакудзи + Философский путь", desc: "2-3 км вдоль канала с сакурой до Нанзэн-дзи.", type: "nature", coords: [35.0267, 135.7983] },
+                            { time: "Вечер", title: "Honke Daiichi Asahi", desc: "Аутентичный рамен у станции Киото. Последний вечер!", type: "food", coords: [34.9858, 135.7583] }
+                        ]
+                    }
+                ]
+            },
+            fukuoka: {
+                city: "Фукуока",
+                dates: "21-24 апреля (выезд утром 24)",
+                days: [
+                    {
+                        date: "21 апреля",
+                        title: "Приезд + Парки и рамен",
+                        distance: "~15 км вело",
+                        items: [
+                            { time: "Утро", title: "Приезд из Киото", desc: "Синкансэн Киото → Хаката (~2.5 часа).", type: "transport", coords: [33.5897, 130.4208] },
+                            { time: "12:00-13:00", title: "Рамен ShinShin", desc: "40+ лет. Кремовый тонкоцу, тонкая лапша.", type: "food", coords: [33.5897, 130.4208] },
+                            { time: "14:00-16:00", title: "Парк Маидзуру + Охори", desc: "Руины замка Фукуока, 1000 сакур, озеро.", type: "nature", coords: [33.5858, 130.3842] },
+                            { time: "16:30-18:00", title: "Y's Road Fukuoka Tenjin", desc: "Крупнейший веломагазин. 300+ велосипедов, одежда.", type: "shop", coords: [33.5892, 130.3983] },
+                            { time: "19:00-20:30", title: "Ichiran или IPPUDO", desc: "Культовый тонкоцу-рамен.", type: "food", coords: [33.5897, 130.4208] }
+                        ]
+                    },
+                    {
+                        date: "22 апреля",
+                        title: "Побережье Munakata-Shikanoshima",
+                        distance: "~51 км вело",
+                        items: [
+                            { time: "09:00-10:00", title: "Святилище Мунаката Тайся", desc: "Всемирное наследие, три богини моря.", type: "sight", coords: [33.8300, 130.5133] },
+                            { time: "10:15-11:00", title: "Michi-no-Eki Munakata", desc: "Фермерский рынок, рыба, пекарня.", type: "food", coords: [33.8117, 130.5283] },
+                            { time: "11:00-13:00", title: "Вело вдоль побережья", desc: "Miyajidake Shrine (11м шимэнава), остров Шиканосима.", type: "velo", coords: [33.6833, 130.3167] },
+                            { time: "14:00-16:00", title: "Пляжи Шиканошимы", desc: "Маяк, пляж Umi, морские панорамы.", type: "nature", coords: [33.6833, 130.3167] },
+                            { time: "19:00-20:30", title: "Ramen Stadium", desc: "Фуд-корт в Canal City. Несколько видов рамена.", type: "food", coords: [33.5897, 130.4108] }
+                        ]
+                    },
+                    {
+                        date: "23 апреля",
+                        title: "Итосима и онсэн",
+                        distance: "~30 км вело",
+                        items: [
+                            { time: "09:00-10:30", title: "Sakurai Futamigaura", desc: "Скалы-супруги с ритуальным канатом.", type: "sight", coords: [33.6117, 130.1617] },
+                            { time: "10:45-12:00", title: "Морская дорога Итошима", desc: "Keya no Oto — морская арка, скалистые пляжи.", type: "nature", coords: [33.6283, 130.1283] },
+                            { time: "12:15-13:15", title: "Обед в Итошима", desc: "Свежие устрицы, креветки, такояки.", type: "food", coords: [33.6117, 130.1617] },
+                            { time: "13:30-15:30", title: "Onsen Nijo Kirara-no-Yu", desc: "Радоновый онсэн. Внутренние и открытые ванны.", type: "relax", coords: [33.5283, 130.2117] },
+                            { time: "18:00-19:30", title: "Рамен Ichiryu", desc: "Насыщенный тонкоцу. Последний вечер в Фукуоке!", type: "food", coords: [33.5897, 130.4208] }
+                        ]
+                    }
+                ]
+            },
+            hiroshima: {
+                city: "Хиросима",
+                dates: "24-27 апреля (выезд утром 27)",
+                days: [
+                    {
+                        date: "24 апреля",
+                        title: "Приезд + История",
+                        distance: "~10 км вело",
+                        items: [
+                            { time: "Утро", title: "Приезд из Фукуоки", desc: "Синкансэн Хаката → Хиросима (~1 час).", type: "transport", coords: [34.3853, 132.4553] },
+                            { time: "День", title: "Заселение + раскатка", desc: "30-60 мин вдоль рек, плоско для фиксов.", type: "velo", coords: [34.3853, 132.4553] },
+                            { time: "Вечер", title: "Peace Memorial Park", desc: "A-Bomb Dome, музей, мемориал.", type: "sight", coords: [34.3955, 132.4536] },
+                            { time: "Ужин", title: "Chukasoba Youki (陽気)", desc: "Классика хиросимского рамена.", type: "food", coords: [34.3917, 132.4583] }
+                        ]
+                    },
+                    {
+                        date: "25 апреля",
+                        title: "Хайкинг: Miyajima + Mt. Misen",
+                        distance: "Хайкинг ~6 км",
+                        items: [
+                            { time: "Утро", title: "Поезд до Miyajimaguchi", desc: "Велосипеды оставить на материке.", type: "transport", coords: [34.2958, 132.3197] },
+                            { time: "День", title: "Остров Миядзима", desc: "Храм Ицукусима, плавающие тории, олени.", type: "sight", coords: [34.2958, 132.3197] },
+                            { time: "День", title: "Mt. Misen хайк", desc: "Вверх пешком, вниз ropeway (или наоборот).", type: "nature", coords: [34.2783, 132.3117] },
+                            { time: "Вечер", title: "Hiroshima tsukemen", desc: "Холодная лапша + острый соус.", type: "food", coords: [34.3917, 132.4583] }
+                        ]
+                    },
+                    {
+                        date: "26 апреля",
+                        title: "Велодень: Onomichi + Shimanami",
+                        distance: "~50-70 км вело",
+                        items: [
+                            { time: "Утро", title: "Поезд до Onomichi", desc: "Ретро-город, храмы на холмах.", type: "transport", coords: [34.4095, 133.2049] },
+                            { time: "День", title: "Shimanami Kaido out&back", desc: "Мосты через острова. Темп для фиксов.", type: "velo", coords: [34.3667, 133.0833] },
+                            { time: "Пит-стоп", title: "ONOMICHI U2 + GIANT STORE", desc: "Велокомплекс, кофе, магазин.", type: "shop", coords: [34.4083, 133.2017] },
+                            { time: "Вечер", title: "Grumpy Bike Shop + ужин", desc: "Одежда/аксессуары. Последний вечер!", type: "shop", coords: [34.3917, 132.4583] }
+                        ]
+                    }
+                ]
+            }
+        };
 
         const logisticsData = [
             { type: "JR Pass", icon: "🎫", title: "Sanyo-San'in Area Pass", detail: "7 дней (¥23,000). Активация 21.04. Покрывает Хиросиму, Кокуру и возврат.", vital: "Идеально." },
@@ -1027,7 +1267,7 @@
 
             if (Math.abs(diff) < threshold) return;
 
-            const views = ['itinerary', 'velo', 'map', 'food', /* 'hotels', */ 'info'];
+            const views = ['itinerary', 'map', 'velo', 'accommodation', 'info'];
             const currentIndex = views.indexOf(currentState.view);
 
             if (diff > 0 && currentIndex > 0) {
@@ -1047,9 +1287,7 @@
                 {id:'itinerary',label:'📅 План'},
                 {id:'map',label:'🗺️ Карта'},
                 {id:'velo',label:'🚴 Вело'},
-                // {id:'hotels',label:'🛏️ Жилье'},
-                {id:'food',label:'🍜 Еда'},
-                {id:'sights',label:'⛩️ Места'},
+                {id:'accommodation',label:'🏠 Жильё'},
                 {id:'info',label:'ℹ️ Инфо'}
             ];
             document.getElementById('desktop-nav').innerHTML = tabs.map(t =>
@@ -1062,10 +1300,9 @@
         function renderMobileNav() {
             const tabs = [
                 { id: 'itinerary', label: 'План', icon: '<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' },
-                { id: 'velo', label: 'Вело', icon: '<path d="M13 10V3L4 14h7v7l9-11h-7z" />' },
                 { id: 'map', label: 'Карта', icon: '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />' },
-                { id: 'food', label: 'Еда', icon: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />' },
-                // { id: 'hotels', label: 'Сон', icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
+                { id: 'velo', label: 'Вело', icon: '<path d="M13 10V3L4 14h7v7l9-11h-7z" />' },
+                { id: 'accommodation', label: 'Жильё', icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
                 { id: 'info', label: 'Инфо', icon: '<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />' }
             ];
             document.getElementById('mobile-bottom-nav').innerHTML = tabs.map(t =>
@@ -1130,15 +1367,27 @@
 
             if(currentState.view === 'itinerary') renderItinerary(el);
             if(currentState.view === 'map') renderMap(el);
-            if(currentState.view === 'sights') renderListWithTabs(el, sightsIntel, currentState.selectedSightsCityId, (id)=>{currentState.selectedSightsCityId=id;renderCurrentView()}, renderSightsDetails, '⛩️');
             if(currentState.view === 'velo') renderVelo(el);
-            if(currentState.view === 'food') renderListWithTabs(el, foodIntel, currentState.selectedFoodCityId, (id)=>{currentState.selectedFoodCityId=id;renderCurrentView()}, renderFoodDetails, '🍜');
-            // if(currentState.view === 'hotels') renderListWithTabs(el, hotelIntel, currentState.selectedHotelCityId, (id)=>{currentState.selectedHotelCityId=id;renderCurrentView()}, renderHotelDetails, '🛏️');
+            if(currentState.view === 'accommodation') renderAccommodation(el);
             if(currentState.view === 'info') renderInfo(el);
         }
 
         function renderItinerary(c) {
             const days = getDaysUntilTrip();
+
+            // Get details from detailedPlans by key like "osaka-0"
+            const getDetails = (detailsKey) => {
+                if (!detailsKey) return null;
+                const [city, dayIdx] = detailsKey.split('-');
+                const plan = detailedPlans[city];
+                if (!plan || !plan.days[dayIdx]) return null;
+                return plan.days[dayIdx];
+            };
+
+            const typeIcon = (type) => {
+                const icons = { food: '🍜', sight: '⛩️', art: '🎨', nature: '🌸', velo: '🚴', relax: '♨️', shop: '🛒', transport: '🚃' };
+                return icons[type] || '📍';
+            };
 
             let h = `
                 <div class="space-y-4 pb-20">
@@ -1157,93 +1406,68 @@
                             <div class="text-xs text-green-600">базовых города</div>
                         </div>
                     </div>
-
-                    <!-- Search -->
-                    <div class="relative mb-4">
-                        <input
-                            type="text"
-                            id="search-input"
-                            placeholder="🔍 Поиск по маршруту..."
-                            value="${currentState.searchQuery}"
-                            oninput="filterItinerary(this.value)"
-                            class="w-full px-4 py-3 rounded-lg border border-stone-200 search-input focus:ring-2 focus:ring-red-500 focus:border-transparent focus:outline-none transition-all bg-white"
-                        >
-                    </div>
-
-                    ${filteredItinerary.length === 0 ?
-                        `<div class="text-center py-8 text-stone-500">
-                            <div class="text-4xl mb-2">🔍</div>
-                            <div>Ничего не найдено</div>
-                        </div>` :
-                        ''
-                    }
             `;
 
-            filteredItinerary.forEach((i, idx) => {
-                const badgeClass = i.type === 'base' ? 'badge-base' : 'badge-trip';
-                const badgeText = i.type === 'base' ? 'БАЗА' : 'ВЫЕЗД';
-                const cardClass = i.title.includes("Awaichi") || i.title.includes("308") ? "border-red-200 bg-red-50" : "border-stone-200 bg-white";
-
-                // Convert time to period of day
-                const timeOfDay = (() => {
-                    const t = i.time;
-                    if (t === 'Утро' || t === 'День' || t === 'Вечер') return t;
-                    const hour = parseInt(t.split(':')[0]);
-                    if (hour >= 6 && hour < 12) return '🌅 Утро';
-                    if (hour >= 12 && hour < 18) return '☀️ День';
-                    return '🌆 Вечер';
-                })();
+            filteredItinerary.forEach((item, idx) => {
+                const badgeClass = item.type === 'base' ? 'badge-base' : 'badge-trip';
+                const badgeText = item.type === 'base' ? 'БАЗА' : 'ВЫЕЗД';
+                const isExpanded = expandedItineraryDays[idx];
+                const details = getDetails(item.details);
 
                 h += `
                     <div class="flex gap-3 relative">
                         <div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] timeline-line z-0 ${idx === filteredItinerary.length-1 ? 'hidden' : ''}"></div>
                         <div class="flex-shrink-0 z-10 text-center">
-                            <div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm day-marker">
+                            <div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm">
                                 <div class="text-[10px] font-bold text-stone-600 leading-none">
-                                    <div class="uppercase text-[8px] text-stone-400">${i.date}</div>
-                                    ${i.day.split('.')[0]}
+                                    <div class="uppercase text-[8px] text-stone-400">${item.date}</div>
+                                    ${item.day}
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-grow ${cardClass} rounded-lg border p-3 shadow-sm card-hover">
-                            <div class="flex justify-between items-start mb-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="badge badge-time">${timeOfDay}</span>
-                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-bold">📍 ${i.city}</span>
+                        <div class="flex-grow bg-white rounded-lg border border-stone-200 shadow-sm overflow-hidden">
+                            <div class="p-3 ${details ? 'cursor-pointer hover:bg-stone-50' : ''}" ${details ? `onclick="toggleItineraryDay(${idx})"` : ''}>
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-bold">📍 ${item.city}</span>
+                                    <span class="badge ${badgeClass}">${badgeText}</span>
                                 </div>
-                                <span class="badge ${badgeClass}">${badgeText}</span>
+                                <h3 class="font-bold text-stone-900 text-base mb-1">${item.title}</h3>
+                                <p class="text-stone-600 text-xs leading-relaxed">${item.desc}</p>
+                                
+                                ${details ? `
+                                    <div class="flex items-center justify-between mt-2 pt-2 border-t border-stone-100 text-xs text-stone-400">
+                                        <span>${details.distance}</span>
+                                        <span class="flex items-center gap-1">
+                                            ${isExpanded ? 'Свернуть' : 'Подробнее'}
+                                            <svg class="w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                ` : ''}
                             </div>
-                            <h3 class="font-bold text-stone-900 text-base mb-2">${i.title}</h3>
-                            <p class="text-stone-600 text-xs leading-relaxed mb-3">${i.desc}</p>
-
-                            <!-- Quick Action Buttons -->
-                            <div class="flex gap-2 pt-2 border-t border-stone-200">
-                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('awaichi') ?
-                                    `<button onclick="showRouteDetailById('awaichi')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
-                                        🚴 Маршрут
-                                    </button>` : ''}
-                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('шиманами') ?
-                                    `<button onclick="showRouteDetailById('shimanami')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
-                                        🚴 Маршрут
-                                    </button>` : ''}
-                                ${i.sight_ref === 'velo' && i.title.toLowerCase().includes('итосима') ?
-                                    `<button onclick="showRouteDetailById('itoshima')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors">
-                                        🚴 Маршрут
-                                    </button>` : ''}
-                                ${(i.city === 'Кобе' && i.title.includes('Горы')) || i.title.includes('308') ?
-                                    `<button onclick="showRouteDetailById('route308')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-red-50 text-red-700 hover:bg-red-100 transition-colors">
-                                        🚴 Route 308
-                                    </button>` : ''}
-                                <button onclick="quickJumpTo('food', '${i.food_ref}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors">
-                                    🍜 Еда
-                                </button>
-                                <button onclick="quickJumpTo('sights', '${i.sight_ref}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors">
-                                    ⛩️ Места
-                                </button>
-                                <button onclick="quickJumpToMap('${i.city}')" class="flex-1 text-[10px] font-bold py-1.5 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors">
-                                    📍 Карта
-                                </button>
-                            </div>
+                            
+                            ${isExpanded && details ? `
+                                <div class="border-t border-stone-200 bg-stone-50">
+                                    ${details.items.map(spot => `
+                                        <div class="p-3 border-b border-stone-100 last:border-b-0 flex gap-3">
+                                            <div class="text-xl flex-shrink-0">${typeIcon(spot.type)}</div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="text-[10px] font-mono text-stone-400 mb-0.5">${spot.time}</div>
+                                                <div class="font-bold text-sm text-stone-900">${spot.title}</div>
+                                                <div class="text-xs text-stone-500 mt-0.5">${spot.desc}</div>
+                                                ${spot.coords ? `
+                                                    <a href="https://www.google.com/maps?q=${spot.coords[0]},${spot.coords[1]}" 
+                                                       target="_blank" onclick="event.stopPropagation()"
+                                                       class="inline-flex items-center gap-1 text-[10px] text-blue-600 mt-1 hover:underline">
+                                                        📍 Открыть на карте
+                                                    </a>
+                                                ` : ''}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -1251,6 +1475,12 @@
 
             c.innerHTML = h + "</div>";
         }
+
+        let expandedItineraryDays = {};
+        window.toggleItineraryDay = (idx) => {
+            expandedItineraryDays[idx] = !expandedItineraryDays[idx];
+            renderCurrentView();
+        };
 
         function renderMap(c) {
             c.innerHTML = `
@@ -1627,6 +1857,299 @@
         //         </div>
         //     `;
         // }
+
+        function renderAccommodation(el) {
+            const statusBadge = (status) => {
+                if (status === 'booked') return '<span class="badge badge-base">✓ Забронировано</span>';
+                return '<span class="badge badge-time">⏳ Ищем</span>';
+            };
+
+            const renderBookingCard = (acc, index) => {
+                if (!acc.booking) {
+                    return `
+                        <div class="p-6 text-center">
+                            <div class="text-4xl mb-3">🔍</div>
+                            <p class="text-stone-500 text-sm">Жильё пока не выбрано</p>
+                            <a href="https://www.airbnb.ru/s/${encodeURIComponent(acc.city + ', Япония')}/homes" 
+                               target="_blank"
+                               class="inline-block mt-4 text-sm font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity shadow-md">
+                                Искать на Airbnb →
+                            </a>
+                        </div>
+                    `;
+                }
+
+                const b = acc.booking;
+                return `
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-stone-900 text-lg">${b.name}</h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="badge ${b.badge}">${b.type}</span>
+                                    <span class="text-yellow-500 text-sm">★ ${b.rating}</span>
+                                    ${b.district ? `<span class="text-xs text-stone-400">📍 ${b.district}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mini Map -->
+                        <div id="acc-map-${acc.id}" class="h-40 w-full rounded-lg mb-4 bg-stone-100 overflow-hidden"></div>
+                        
+                        <div class="grid grid-cols-3 gap-2 text-xs text-stone-600 mb-4">
+                            <div class="bg-stone-50 p-2 rounded text-center">
+                                <div class="font-bold text-stone-800">�️ ${b.rooms}</div>
+                            </div>
+                            <div class="bg-stone-50 p-2 rounded text-center">
+                                <div class="font-bold text-stone-800">�️ ${b.beds}</div>
+                            </div>
+                            <div class="bg-stone-50 p-2 rounded text-center">
+                                <div class="font-bold text-stone-800">🚿 ${b.bath}</div>
+                            </div>
+                        </div>
+                        <a href="${b.link}" 
+                           target="_blank"
+                           class="block w-full text-center text-sm font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-3 rounded-lg hover:opacity-90 transition-opacity shadow-md">
+                            Открыть на Airbnb →
+                        </a>
+                    </div>
+                `;
+            };
+
+            el.innerHTML = `
+                <div class="space-y-4 pb-20">
+                    <div class="text-center mb-6">
+                        <h1 class="text-2xl font-serif font-bold text-stone-900">🏠 Жильё</h1>
+                        <p class="text-sm text-stone-500 mt-1">Забронированные места для ночёвок</p>
+                    </div>
+                    
+                    <div class="grid gap-4">
+                        ${accommodations.map((acc, i) => `
+                            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden card-hover fade-in">
+                                <div class="bg-stone-100 p-4 border-b border-stone-200">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h2 class="text-xl font-serif font-bold text-stone-900">${acc.city}</h2>
+                                            <p class="text-xs text-stone-500 mt-1">${acc.dates}</p>
+                                        </div>
+                                        ${statusBadge(acc.status)}
+                                    </div>
+                                    <p class="text-xs text-stone-600 mt-2 italic">${acc.desc}</p>
+                                </div>
+                                ${renderBookingCard(acc, i)}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Initialize mini maps after DOM is ready
+            setTimeout(() => initAccommodationMaps(), 100);
+        }
+
+        function initAccommodationMaps() {
+            if (typeof ymaps === 'undefined') return;
+            
+            ymaps.ready(() => {
+                accommodations.forEach(acc => {
+                    if (!acc.booking || !acc.coords) return;
+                    
+                    const mapContainer = document.getElementById(`acc-map-${acc.id}`);
+                    if (!mapContainer) return;
+                    
+                    const miniMap = new ymaps.Map(mapContainer, {
+                        center: acc.coords,
+                        zoom: 15,
+                        controls: ['zoomControl']
+                    }, {
+                        suppressMapOpenBlock: true
+                    });
+
+                    const b = acc.booking;
+                    const balloonContent = `
+                        <div style="width: 220px; font-family: 'Noto Sans', sans-serif;">
+                            <div style="width: 100%; height: 120px; background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%); border-radius: 8px 8px 0 0; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 48px;">🏠</span>
+                            </div>
+                            <div style="padding: 12px;">
+                                <div style="font-weight: 700; font-size: 14px; color: #1c1917; margin-bottom: 4px;">${b.name}</div>
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                    <span style="color: #f59e0b; font-size: 12px;">★ ${b.rating}</span>
+                                    <span style="font-size: 11px; color: #78716c;">${b.district || acc.city}</span>
+                                </div>
+                                <div style="font-size: 11px; color: #57534e; margin-bottom: 10px;">
+                                    ${b.rooms} · ${b.beds} · ${b.bath}
+                                </div>
+                                <a href="${b.link}" target="_blank" 
+                                   style="display: block; text-align: center; background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%); 
+                                          color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; 
+                                          font-size: 12px; font-weight: 600;">
+                                    Открыть на Airbnb →
+                                </a>
+                            </div>
+                        </div>
+                    `;
+
+                    const placemark = new ymaps.Placemark(acc.coords, {
+                        balloonContent: balloonContent,
+                        hintContent: `🏠 ${b.name} ★${b.rating}`
+                    }, {
+                        preset: 'islands#redHomeIcon',
+                        balloonPanelMaxMapArea: 0,
+                        hideIconOnBalloonOpen: false
+                    });
+
+                    miniMap.geoObjects.add(placemark);
+                    miniMap.behaviors.disable('scrollZoom');
+                    
+                    // Open balloon on marker hover
+                    placemark.events.add('mouseenter', function() {
+                        placemark.balloon.open();
+                    });
+                });
+            });
+        }
+
+        // ============================================
+        // 📋 DETAILED PLANS RENDERING
+        // ============================================
+        let selectedPlanCity = 'osaka';
+        let expandedDays = {};
+
+        function renderDetailedPlans(el) {
+            const cities = Object.keys(detailedPlans);
+            const plan = detailedPlans[selectedPlanCity];
+
+            const typeIcon = (type) => {
+                const icons = {
+                    food: '🍜',
+                    sight: '⛩️',
+                    art: '🎨',
+                    nature: '🌸',
+                    velo: '🚴',
+                    relax: '♨️',
+                    shop: '🛒',
+                    transport: '🚃'
+                };
+                return icons[type] || '📍';
+            };
+
+            const typeBadge = (type) => {
+                const badges = {
+                    food: 'badge-sweet',
+                    sight: 'badge-history',
+                    art: 'badge-design',
+                    nature: 'badge-nature',
+                    velo: 'badge-road',
+                    relax: 'badge-onsen',
+                    shop: 'badge-tech',
+                    transport: 'badge-trip'
+                };
+                return badges[type] || 'badge-local';
+            };
+
+            el.innerHTML = `
+                <div class="space-y-4 pb-20">
+                    <div class="text-center mb-4">
+                        <h1 class="text-2xl font-serif font-bold text-stone-900">📋 Детальный план</h1>
+                        <p class="text-sm text-stone-500 mt-1">Подробное расписание по дням</p>
+                    </div>
+
+                    <!-- City Tabs -->
+                    <div class="flex gap-2 overflow-x-auto hide-scroll pb-2">
+                        ${cities.map(cityId => {
+                            const c = detailedPlans[cityId];
+                            return `
+                                <button onclick="selectPlanCity('${cityId}')" 
+                                    class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                                        selectedPlanCity === cityId 
+                                            ? 'bg-stone-900 text-white' 
+                                            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                                    }">
+                                    ${c.city}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- City Header -->
+                    <div class="bg-gradient-to-r from-rose-500 to-orange-500 rounded-xl p-4 text-white">
+                        <h2 class="text-xl font-bold">${plan.city}</h2>
+                        <p class="text-sm opacity-90">${plan.dates}</p>
+                        <p class="text-xs mt-2 opacity-75">${plan.days.length} дней запланировано</p>
+                    </div>
+
+                    <!-- Days -->
+                    <div class="space-y-3">
+                        ${plan.days.map((day, dayIndex) => {
+                            const isExpanded = expandedDays[`${selectedPlanCity}-${dayIndex}`];
+                            return `
+                                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                                    <button onclick="togglePlanDay('${selectedPlanCity}', ${dayIndex})" 
+                                        class="w-full p-4 flex justify-between items-center hover:bg-stone-50 transition-colors">
+                                        <div class="text-left">
+                                            <div class="font-bold text-stone-900">${day.date}</div>
+                                            <div class="text-sm text-stone-600">${day.title}</div>
+                                            <div class="text-xs text-stone-400 mt-1">${day.distance}</div>
+                                        </div>
+                                        <svg class="w-5 h-5 text-stone-400 transition-transform ${isExpanded ? 'rotate-180' : ''}" 
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </button>
+                                    
+                                    ${isExpanded ? `
+                                        <div class="border-t border-stone-100 divide-y divide-stone-50">
+                                            ${day.items.map(item => `
+                                                <div class="p-4 hover:bg-stone-50 transition-colors">
+                                                    <div class="flex gap-3">
+                                                        <div class="text-2xl">${typeIcon(item.type)}</div>
+                                                        <div class="flex-1">
+                                                            <div class="flex items-start justify-between gap-2">
+                                                                <div>
+                                                                    <span class="text-xs text-stone-400 font-mono">${item.time}</span>
+                                                                    <h4 class="font-bold text-stone-900">${item.title}</h4>
+                                                                </div>
+                                                                <span class="badge ${typeBadge(item.type)} flex-shrink-0">${item.type}</span>
+                                                            </div>
+                                                            <p class="text-sm text-stone-600 mt-1">${item.desc}</p>
+                                                            ${item.coords ? `
+                                                                <a href="https://www.google.com/maps?q=${item.coords[0]},${item.coords[1]}" 
+                                                                   target="_blank"
+                                                                   class="inline-flex items-center gap-1 text-xs text-blue-600 mt-2 hover:underline">
+                                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                                    </svg>
+                                                                    Открыть на карте
+                                                                </a>
+                                                            ` : ''}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.selectPlanCity = (cityId) => {
+            selectedPlanCity = cityId;
+            renderCurrentView();
+        };
+
+        window.togglePlanDay = (cityId, dayIndex) => {
+            const key = `${cityId}-${dayIndex}`;
+            expandedDays[key] = !expandedDays[key];
+            renderCurrentView();
+        };
 
         function renderChecklistBlock() {
             const urgent = (x) => x.urgent ? 'border-red-200 bg-red-50' : 'border-stone-200 bg-white';
