@@ -3,630 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Япония 2026: General Plan</title>
+    <title>Япония 2026</title>
     
-    <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=5912b65b-5a13-482f-bf3c-6a11282b5100&lang=ru_RU" type="text/javascript"></script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg-primary: #fcfbf9;
-            --bg-secondary: #ffffff;
-            --text-primary: #292524;
-            --text-secondary: #57534e;
-            --border-color: #e7e5e4;
-            --accent-color: #e11d48;
-        }
-
-        /* Dark theme */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #1c1917;
-                --bg-secondary: #292524;
-                --text-primary: #e7e5e4;
-                --text-secondary: #a8a29e;
-                --border-color: #44403c;
-            }
-
-            .bg-white { background-color: #292524 !important; }
-            .bg-stone-50 { background-color: #1c1917 !important; }
-            .bg-stone-100 { background-color: #292524 !important; }
-            .text-stone-900 { color: #e7e5e4 !important; }
-            .text-stone-800 { color: #d6d3d1 !important; }
-            .text-stone-600 { color: #a8a29e !important; }
-            .text-stone-500 { color: #78716c !important; }
-            .border-stone-200 { border-color: #44403c !important; }
-            .border-stone-300 { border-color: #57534e !important; }
-
-            #map-container { background: #292524 !important; }
-
-            .ymaps-2-1-79-balloon__content {
-                background: #292524 !important;
-            }
-            .balloon-title { color: #e7e5e4 !important; }
-            .balloon-desc { color: #a8a29e !important; }
-        }
-
+        * { box-sizing: border-box; }
+        
         body {
-            font-family: 'Noto Sans', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease;
         }
 
-        h1, h2, h3, .serif-font { font-family: 'Merriweather', serif; }
+        @media (prefers-color-scheme: dark) {
+            body { background: #0a0a0a; color: #fafafa; }
+            .card { background: #141414 !important; border-color: #262626 !important; }
+            .bg-white { background: #141414 !important; }
+            .border-gray-100 { border-color: #262626 !important; }
+            .border-gray-200 { border-color: #262626 !important; }
+            .text-gray-500 { color: #737373 !important; }
+            .text-gray-600 { color: #a3a3a3 !important; }
+            .text-gray-900 { color: #fafafa !important; }
+            .bg-gray-50 { background: #1a1a1a !important; }
+            .bg-gray-100 { background: #262626 !important; }
+            #map-container { background: #262626 !important; }
+        }
+
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        .mobile-safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        
-        /* Enhanced animations */
-        .fade-in {
-            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
-        .slide-in-right {
-            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        .card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            transition: border-color 0.15s;
         }
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
+        .card:hover { border-color: #d4d4d4; }
 
-        /* Card hover effects */
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-        }
-
-        /* Pulse animation for urgent items */
-        @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .badge-urgent {
-            animation: pulse-subtle 2s ease-in-out infinite;
-        }
-
-        /* Timeline gradient */
         .timeline-line {
-            background: linear-gradient(180deg, #e11d48 0%, #f97316 50%, #0891b2 100%);
+            background: #e5e5e5;
+        }
+        @media (prefers-color-scheme: dark) {
+            .timeline-line { background: #262626; }
         }
 
-        /* Skeleton loading */
-        .skeleton {
-            background: linear-gradient(90deg, #e7e5e4 25%, #f5f5f4 50%, #e7e5e4 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s ease-in-out infinite;
+        .badge {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        @keyframes skeleton-loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+        .badge-base { background: #dcfce7; color: #166534; }
+        .badge-trip { background: #dbeafe; color: #1e40af; }
 
         @media (prefers-color-scheme: dark) {
-            .skeleton {
-                background: linear-gradient(90deg, #292524 25%, #3f3f46 50%, #292524 75%);
-                background-size: 200% 100%;
-            }
+            .badge-base { background: #14532d; color: #86efac; }
+            .badge-trip { background: #1e3a8a; color: #93c5fd; }
         }
 
         #map-container {
             height: 100%;
-            min-height: 700px;
+            min-height: 600px;
             width: 100%;
-            border-radius: 12px;
-            z-index: 1;
-            background: #e5e7eb;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Map skeleton */
-        .map-skeleton {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, #e7e5e4 25%, #f5f5f4 50%, #e7e5e4 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s ease-in-out infinite;
-            z-index: 10;
-            border-radius: 12px;
-        }
-
-        /* Progress bar */
-        .progress-bar-container {
-            position: relative;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Enhanced badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.1);
-            transition: all 0.2s ease;
-        }
-        .badge:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .badge-base { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .badge-trip { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .badge-time { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; margin-right: 6px; }
-        .badge-road { background: #172554; color: #bfdbfe; border: 1px solid #1d4ed8; }
-        .badge-casual { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
-        .badge-history { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; }
-        .badge-local { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .badge-sweet { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-        .badge-tech { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .badge-soul { background: #fdf4ff; color: #86198f; border: 1px solid #f0abfc; }
-        .badge-onsen { background: #fff1f2; color: #be123c; border: 1px solid #fda4af; }
-        .badge-design { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
-        .badge-vibe { background: #fdf4ff; color: #86198f; border: 1px solid #f0abfc; }
-        .badge-value { background: #ecfccb; color: #3f6212; border: 1px solid #d9f99d; }
-        .badge-art { background: #fefce8; color: #854d0e; border: 1px solid #fde68a; }
-        .badge-nature { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
-        .badge-relax { background: #f0f9ff; color: #075985; border: 1px solid #7dd3fc; }
-        .badge-trek { background: #f5f3ff; color: #5b21b6; border: 1px solid #c4b5fd; }
-
-        /* Premium gradient badge */
-        .badge-premium {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-        }
-
-        .tag-pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            border-radius: 999px;
-            font-size: .65rem;
-            font-weight: 700;
-            border: 1px solid #e7e5e4;
-            background: #fafaf9;
-            color: #44403c;
-            transition: all 0.2s ease;
-        }
-        .tag-pill:hover {
-            background: #e7e5e4;
-            transform: scale(1.05);
-        }
-
-        .segmented-control {
-            background: #e7e5e4;
-            padding: 4px;
             border-radius: 8px;
-            display: flex;
+            background: #f5f5f5;
+            overflow: hidden;
         }
-        .segment-btn {
-            flex: 1;
-            text-align: center;
-            padding: 8px 0;
+
+        .nav-btn {
+            padding: 8px 16px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
+            color: #737373;
             border-radius: 6px;
-            color: #57534e;
-            transition: all 0.2s;
-            cursor: pointer;
+            transition: all 0.15s;
         }
-        .segment-active {
-            background: white;
-            color: #1c1917;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
+        .nav-btn:hover { color: #1a1a1a; background: #f5f5f5; }
+        .nav-btn.active { color: #1a1a1a; background: #f5f5f5; }
 
         @media (prefers-color-scheme: dark) {
-            .segmented-control { background: #44403c; }
-            .segment-btn { color: #a8a29e; }
-            .segment-active { background: #292524; color: #e7e5e4; }
+            .nav-btn:hover { color: #fafafa; background: #262626; }
+            .nav-btn.active { color: #fafafa; background: #262626; }
         }
 
-        /* Floating Action Button */
-        .fab {
-            position: fixed;
-            bottom: 80px;
-            right: 16px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #e11d48 0%, #f97316 100%);
-            color: white;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+        .mobile-nav-btn {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 40;
+            padding: 8px;
+            color: #a3a3a3;
+            transition: color 0.15s;
         }
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.6);
-        }
-        .fab:active {
-            transform: scale(0.95);
+        .mobile-nav-btn.active { color: #1a1a1a; }
+        .mobile-nav-btn span { font-size: 10px; margin-top: 2px; }
+
+        @media (prefers-color-scheme: dark) {
+            .mobile-nav-btn.active { color: #fafafa; }
         }
 
-        @media (min-width: 768px) {
-            .fab {
-                bottom: 24px;
-            }
-        }
-
-        /* Toast notifications */
         .toast {
             position: fixed;
-            top: 80px;
+            top: 16px;
             right: 16px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 90vw;
-        }
-        .toast.show {
-            transform: translateX(0);
-        }
-        .toast-success { background: #10b981; color: white; }
-        .toast-error { background: #ef4444; color: white; }
-        .toast-info { background: #3b82f6; color: white; }
-
-        /* Search input */
-        .search-input {
-            transition: all 0.3s ease;
-        }
-        .search-input:focus {
-            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
-        }
-
-        /* Stats cards */
-        .stat-card {
-            background: linear-gradient(135deg, var(--from), var(--to));
-            border-radius: 12px;
-            padding: 16px;
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-
-        /* Image placeholder gradients */
-        .img-placeholder-1 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .img-placeholder-2 { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .img-placeholder-3 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .img-placeholder-4 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .img-placeholder-5 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .img-placeholder-6 { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
-
-        /* Day marker with check */
-        .day-marker {
-            position: relative;
-        }
-        .day-marker::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            padding: 12px 16px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            transform: translateY(-100px);
             opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 16px;
-            font-weight: bold;
-            color: #10b981;
+            transition: all 0.2s;
+            z-index: 9999;
         }
-        .day-completed .day-marker::after {
-            opacity: 1;
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        .stat-box {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        .stat-box .num { font-size: 28px; font-weight: 700; color: #1a1a1a; }
+        .stat-box .label { font-size: 11px; color: #737373; margin-top: 2px; }
+
+        @media (prefers-color-scheme: dark) {
+            .stat-box { background: #141414; border-color: #262626; }
+            .stat-box .num { color: #fafafa; }
         }
 
-        /* Theme toggle button */
-        .theme-toggle {
-            position: fixed;
-            top: 70px;
-            right: 16px;
-            width: 40px;
-            height: 40px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 100;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        /* Yandex Maps Balloon Styling */
-        .ymaps-2-1-79-balloon__layout {
-            border-radius: 8px !important;
-            overflow: hidden !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-        }
-
-        .ymaps-2-1-79-balloon__content {
-            padding: 12px !important;
-            min-width: 200px !important;
-            max-width: 280px !important;
-        }
-
-        .balloon-title {
-            font-size: 14px !important;
-            font-weight: 700 !important;
-            color: #1c1917 !important;
-            margin-bottom: 4px !important;
-            line-height: 1.2 !important;
-        }
-
-        .balloon-desc {
-            font-size: 12px !important;
-            line-height: 1.5 !important;
-            color: #57534e !important;
-        }
-
-        @media (max-width: 420px) {
-            .ymaps-2-1-79-balloon__content {
-                min-width: 180px !important;
-                max-width: 85vw !important;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Bottom Sheet Modal */
         .bottom-sheet-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.4);
             z-index: 9998;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s;
         }
-        .bottom-sheet-overlay.show {
-            opacity: 1;
-        }
+        .bottom-sheet-overlay.show { opacity: 1; }
 
         .bottom-sheet {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--bg-secondary);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-            z-index: 9999;
-            max-height: 85vh;
+            background: white;
+            border-radius: 12px 12px 0 0;
+            max-height: 80vh;
             overflow-y: auto;
             transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s;
+            z-index: 9999;
         }
-        .bottom-sheet.show {
-            transform: translateY(0);
+        .bottom-sheet.show { transform: translateY(0); }
+
+        @media (prefers-color-scheme: dark) {
+            .bottom-sheet { background: #141414; }
         }
 
-        .bottom-sheet-handle {
-            width: 40px;
-            height: 4px;
-            background: #d4d4d8;
-            border-radius: 2px;
-            margin: 12px auto 16px;
+        .card-hover {
+            transition: all 0.15s;
+        }
+        .card-hover:hover {
+            background: #f9fafb;
+        }
+        @media (prefers-color-scheme: dark) {
+            .card-hover:hover { background: #1f1f1f; }
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            padding: 2px 8px;
+            background: #f3f4f6;
+            color: #4b5563;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        @media (prefers-color-scheme: dark) {
+            .tag-pill { background: #374151; color: #d1d5db; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .route-detail-map {
-            height: 450px;
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
+            min-height: 200px;
+            border-radius: 8px;
         }
 
-        @media (min-width: 768px) {
-            .route-detail-map {
-                height: 100%;
-                min-height: 450px;
-            }
+        .bottom-sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+        @media (prefers-color-scheme: dark) {
+            .bottom-sheet-handle { background: #4b5563; }
+        }
+
+        /* Badge variants for different types */
+        .badge-time { background: #fef3c7; color: #92400e; }
+        .badge-road { background: #dbeafe; color: #1e40af; }
+        .badge-casual { background: #d1fae5; color: #065f46; }
+        .badge-history { background: #fce7f3; color: #9d174d; }
+        .badge-nature { background: #d1fae5; color: #065f46; }
+        .badge-design { background: #ede9fe; color: #5b21b6; }
+        .badge-local { background: #fed7aa; color: #9a3412; }
+        .badge-vibe { background: #fecaca; color: #991b1b; }
+        .badge-tech { background: #e0e7ff; color: #3730a3; }
+        .badge-onsen { background: #fce7f3; color: #9d174d; }
+        .badge-sweet { background: #fef3c7; color: #92400e; }
+        .badge-trek { background: #ccfbf1; color: #0f766e; }
+        .badge-relax { background: #fae8ff; color: #86198f; }
+        .badge-art { background: #ede9fe; color: #5b21b6; }
+
+        @media (prefers-color-scheme: dark) {
+            .badge-time { background: #78350f; color: #fef3c7; }
+            .badge-road { background: #1e3a8a; color: #93c5fd; }
+            .badge-casual { background: #064e3b; color: #6ee7b7; }
+            .badge-history { background: #831843; color: #fbcfe8; }
+            .badge-nature { background: #064e3b; color: #6ee7b7; }
+            .badge-design { background: #4c1d95; color: #c4b5fd; }
+            .badge-local { background: #7c2d12; color: #fed7aa; }
+            .badge-vibe { background: #7f1d1d; color: #fecaca; }
+            .badge-tech { background: #312e81; color: #c7d2fe; }
+            .badge-onsen { background: #831843; color: #fbcfe8; }
+            .badge-sweet { background: #78350f; color: #fef3c7; }
+            .badge-trek { background: #134e4a; color: #99f6e4; }
+            .badge-relax { background: #701a75; color: #f5d0fe; }
+            .badge-art { background: #4c1d95; color: #c4b5fd; }
         }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen pb-20 md:pb-0">
+<body class="min-h-screen pb-16 md:pb-0">
 
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" onclick="toggleTheme()" title="Переключить тему">
-        <span id="theme-icon">🌙</span>
-    </div>
-
-    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm safe-top">
-        <div class="max-w-6xl mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-teal-800 rounded flex items-center justify-center text-white font-serif font-bold text-lg">JP</div>
-                <div>
-                    <div class="font-bold text-base md:text-lg leading-tight text-stone-900">Japan 2026</div>
-                    <div class="text-[10px] md:text-xs text-stone-500 font-medium">General Plan</div>
-                </div>
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🇯🇵</span>
+                <span class="font-semibold text-gray-900">Япония 2026</span>
             </div>
             <nav class="hidden md:flex gap-1" id="desktop-nav"></nav>
         </div>
     </header>
 
-    <!-- Progress Bar -->
-    <div id="progress-bar-container" class="hidden sticky top-14 md:top-16 bg-white border-b border-stone-200 z-40 shadow-sm"></div>
-
-    <main class="flex-grow w-full max-w-6xl mx-auto px-3 md:px-4 py-4 md:py-8 h-full">
-        <div id="app-view" class="fade-in h-full"></div>
+    <main class="max-w-3xl mx-auto px-4 py-6">
+        <div id="app-view"></div>
     </main>
 
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-stone-200 z-50 mobile-safe-bottom shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div class="grid grid-cols-6 h-16" id="mobile-bottom-nav"></div>
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 z-50">
+        <div class="grid grid-cols-5 h-14" id="mobile-bottom-nav"></div>
     </nav>
 
-    <!-- Floating Action Button -->
-    <div class="fab" onclick="showQuickActions()" title="Быстрые действия">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M12 4v16m8-8H4" />
-        </svg>
-    </div>
-
     <script>
-        // ============================================
-        // 🔑 CONFIGURATION
-        // ============================================
+        // ================= HELPERS =================
+        const qs = (s, r = document) => r.querySelector(s);
+        const qsa = (s, r = document) => r.querySelectorAll(s);
+        const safe = (v, d = '') => v ?? d;
+
         const YANDEX_API_KEY = '5912b65b-5a13-482f-bf3c-6a11282b5100';
-        const TRIP_START_DATE = new Date('2026-04-15');
-        const THEME_KEY = 'jp2026_theme';
 
-        // ============================================
-        // 🛠️ HELPER FUNCTIONS
-        // ============================================
-        const isMobile = () => window.innerWidth <= 768;
-        const qs = (sel, root=document) => root.querySelector(sel);
-        const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-        const safe = (v, fallback='') => (v === undefined || v === null ? fallback : v);
-
-        // Theme management
-        let currentTheme = localStorage.getItem(THEME_KEY) || 'auto';
-
-        function toggleTheme() {
-            const themes = ['auto', 'light', 'dark'];
-            const currentIndex = themes.indexOf(currentTheme);
-            currentTheme = themes[(currentIndex + 1) % themes.length];
-            localStorage.setItem(THEME_KEY, currentTheme);
-            applyTheme();
-            showToast('Тема переключена: ' + (currentTheme === 'auto' ? 'Авто' : currentTheme === 'light' ? 'Светлая' : 'Темная'), 'info');
-        }
-
-        function applyTheme() {
-            const icon = document.getElementById('theme-icon');
-            if (currentTheme === 'light') {
-                document.documentElement.style.colorScheme = 'light';
-                icon.textContent = '☀️';
-            } else if (currentTheme === 'dark') {
-                document.documentElement.style.colorScheme = 'dark';
-                icon.textContent = '🌙';
-            } else {
-                document.documentElement.style.colorScheme = 'light dark';
-                icon.textContent = '🌗';
-            }
-        }
-
-        // Toast notifications
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-
-            const icon = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
-            toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-
-            document.body.appendChild(toast);
-
-            setTimeout(() => toast.classList.add('show'), 10);
-
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // Quick actions menu
-        function showQuickActions() {
-            const actions = [
-                { label: 'Добавить в чеклист', action: () => { switchView('info'); changeInfo('logistics'); setTimeout(() => document.getElementById('add-check-item')?.click(), 200); } },
-                { label: 'Поиск по плану', action: () => { switchView('itinerary'); setTimeout(() => document.getElementById('search-input')?.focus(), 200); } },
-                { label: 'Экспорт в PDF', action: () => showToast('Функция в разработке', 'info') }
-            ];
-
-            const menu = actions.map((a, i) => `<button onclick="(${a.action})(); closeQuickMenu();" class="w-full text-left px-4 py-3 hover:bg-stone-50 transition-colors">${a.label}</button>`).join('');
-
-            const overlay = document.createElement('div');
-            overlay.id = 'quick-menu-overlay';
-            overlay.className = 'fixed inset-0 bg-black bg-opacity-30 z-[60] fade-in';
-            overlay.onclick = closeQuickMenu;
-
-            const menuDiv = document.createElement('div');
-            menuDiv.id = 'quick-menu';
-            menuDiv.className = 'fixed bottom-20 right-4 bg-white rounded-xl shadow-2xl overflow-hidden z-[70] slide-in-right';
-            menuDiv.innerHTML = menu;
-
-            document.body.appendChild(overlay);
-            document.body.appendChild(menuDiv);
-        }
-
-        function closeQuickMenu() {
-            document.getElementById('quick-menu-overlay')?.remove();
-            document.getElementById('quick-menu')?.remove();
-        }
-
-        // Calculate days until trip
         function getDaysUntilTrip() {
-            const now = new Date();
-            const diff = TRIP_START_DATE - now;
+            const tripStart = new Date('2026-04-15');
+            const today = new Date();
+            const diff = tripStart - today;
             return Math.ceil(diff / (1000 * 60 * 60 * 24));
         }
 
-        // Render progress bar
+        function showToast(msg, type = 'info') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 200);
+            }, 2500);
+        }
+
+        function applyTheme() {
+            // Theme is handled by CSS prefers-color-scheme
+        }
+
         function renderProgressBar() {
-            const container = document.getElementById('progress-bar-container');
-            if (currentState.view !== 'itinerary') {
-                container.classList.add('hidden');
-                return;
-            }
-
-            const days = getDaysUntilTrip();
-            const totalDays = 365; // Assuming planning started ~1 year before
-            const progress = Math.max(0, Math.min(100, ((totalDays - days) / totalDays) * 100));
-
-            container.classList.remove('hidden');
-            container.innerHTML = `
-                <div class="max-w-6xl mx-auto px-4 py-3">
-                    <div class="flex justify-between text-xs mb-2">
-                        <span class="font-bold text-stone-600">До поездки</span>
-                        <span class="font-bold" style="color: ${days < 30 ? '#e11d48' : '#0891b2'}">${days} ${days === 1 ? 'день' : days < 5 ? 'дня' : 'дней'}</span>
-                    </div>
-                    <div class="h-2 bg-stone-200 rounded-full overflow-hidden progress-bar-container">
-                        <div class="h-full bg-gradient-to-r from-red-500 via-orange-500 to-blue-500 progress-bar-fill" style="width: ${progress}%"></div>
-                    </div>
-                </div>
-            `;
+            // Progress bar removed in minimalist redesign
         }
 
         // ================= DATA =================
@@ -1284,33 +966,29 @@
         // ============================================
         function renderDesktopNav() {
             const tabs = [
-                {id:'itinerary',label:'📅 План'},
-                {id:'map',label:'🗺️ Карта'},
-                {id:'velo',label:'🚴 Вело'},
-                {id:'accommodation',label:'🏠 Жильё'},
-                {id:'info',label:'ℹ️ Инфо'}
+                {id:'itinerary',label:'План'},
+                {id:'map',label:'Карта'},
+                {id:'velo',label:'Вело'},
+                {id:'accommodation',label:'Жильё'},
+                {id:'info',label:'Инфо'}
             ];
             document.getElementById('desktop-nav').innerHTML = tabs.map(t =>
-                `<button onclick="switchView('${t.id}')" class="px-3 py-2 rounded-md transition-all ${
-                    currentState.view === t.id ? 'bg-stone-900 text-white' : 'text-stone-600 hover:bg-stone-100'
-                }">${t.label}</button>`
+                `<button onclick="switchView('${t.id}')" class="nav-btn ${currentState.view === t.id ? 'active' : ''}">${t.label}</button>`
             ).join('');
         }
 
         function renderMobileNav() {
             const tabs = [
-                { id: 'itinerary', label: 'План', icon: '<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />' },
-                { id: 'map', label: 'Карта', icon: '<path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />' },
-                { id: 'velo', label: 'Вело', icon: '<path d="M13 10V3L4 14h7v7l9-11h-7z" />' },
-                { id: 'accommodation', label: 'Жильё', icon: '<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />' },
-                { id: 'info', label: 'Инфо', icon: '<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />' }
+                { id: 'itinerary', label: 'План', icon: '📅' },
+                { id: 'map', label: 'Карта', icon: '🗺️' },
+                { id: 'velo', label: 'Вело', icon: '🚴' },
+                { id: 'accommodation', label: 'Жильё', icon: '🏠' },
+                { id: 'info', label: 'Инфо', icon: 'ℹ️' }
             ];
             document.getElementById('mobile-bottom-nav').innerHTML = tabs.map(t =>
-                `<button onclick="switchView('${t.id}')" class="flex flex-col items-center justify-center w-full transition-colors ${
-                    currentState.view === t.id ? 'text-stone-900' : 'text-stone-400'
-                }">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${t.icon}</svg>
-                    <span class="text-[10px] font-bold">${t.label}</span>
+                `<button onclick="switchView('${t.id}')" class="mobile-nav-btn ${currentState.view === t.id ? 'active' : ''}">
+                    <span class="text-lg">${t.icon}</span>
+                    <span>${t.label}</span>
                 </button>`
             ).join('');
         }
@@ -1375,7 +1053,6 @@
         function renderItinerary(c) {
             const days = getDaysUntilTrip();
 
-            // Get details from detailedPlans by key like "osaka-0"
             const getDetails = (detailsKey) => {
                 if (!detailsKey) return null;
                 const [city, dayIdx] = detailsKey.split('-');
@@ -1385,82 +1062,77 @@
             };
 
             const typeIcon = (type) => {
-                const icons = { food: '🍜', sight: '⛩️', art: '🎨', nature: '🌸', velo: '🚴', relax: '♨️', shop: '🛒', transport: '🚃' };
+                const icons = { food: '🍜', sight: '⛩️', art: '', nature: '🌸', velo: '🚴', relax: '♨️', shop: '🛒', transport: '🚃' };
                 return icons[type] || '📍';
             };
 
             let h = `
-                <div class="space-y-4 pb-20">
+                <div class="space-y-6 pb-8">
                     <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-3 mb-6">
-                        <div class="stat-card" style="--from: #fef2f2; --to: #fee2e2;">
-                            <div class="text-2xl font-bold text-red-600">${days}</div>
-                            <div class="text-xs text-red-600">дней осталось</div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="stat-box">
+                            <div class="num">${days}</div>
+                            <div class="label">дней до старта</div>
                         </div>
-                        <div class="stat-card" style="--from: #eff6ff; --to: #dbeafe;">
-                            <div class="text-2xl font-bold text-blue-600">14</div>
-                            <div class="text-xs text-blue-600">дней поездки</div>
+                        <div class="stat-box">
+                            <div class="num">14</div>
+                            <div class="label">дней поездки</div>
                         </div>
-                        <div class="stat-card" style="--from: #f0fdf4; --to: #dcfce7;">
-                            <div class="text-2xl font-bold text-green-600">4</div>
-                            <div class="text-xs text-green-600">базовых города</div>
+                        <div class="stat-box">
+                            <div class="num">4</div>
+                            <div class="label">города</div>
                         </div>
                     </div>
+
+                    <!-- Timeline -->
+                    <div class="space-y-3">
             `;
 
             filteredItinerary.forEach((item, idx) => {
-                const badgeClass = item.type === 'base' ? 'badge-base' : 'badge-trip';
-                const badgeText = item.type === 'base' ? 'БАЗА' : 'ВЫЕЗД';
                 const isExpanded = expandedItineraryDays[idx];
                 const details = getDetails(item.details);
 
                 h += `
-                    <div class="flex gap-3 relative">
-                        <div class="absolute left-[18px] top-8 bottom-[-16px] w-[2px] timeline-line z-0 ${idx === filteredItinerary.length-1 ? 'hidden' : ''}"></div>
-                        <div class="flex-shrink-0 z-10 text-center">
-                            <div class="w-10 h-10 rounded-full bg-white border-2 border-stone-300 flex items-center justify-center shadow-sm">
-                                <div class="text-[10px] font-bold text-stone-600 leading-none">
-                                    <div class="uppercase text-[8px] text-stone-400">${item.date}</div>
-                                    ${item.day}
-                                </div>
+                    <div class="flex gap-3">
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
+                                ${item.day}
                             </div>
+                            ${idx < filteredItinerary.length - 1 ? '<div class="w-px flex-1 bg-gray-200 my-1"></div>' : ''}
                         </div>
-                        <div class="flex-grow bg-white rounded-lg border border-stone-200 shadow-sm overflow-hidden">
-                            <div class="p-3 ${details ? 'cursor-pointer hover:bg-stone-50' : ''}" ${details ? `onclick="toggleItineraryDay(${idx})"` : ''}>
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-bold">📍 ${item.city}</span>
-                                    <span class="badge ${badgeClass}">${badgeText}</span>
+                        <div class="flex-1 card ${details ? 'cursor-pointer' : ''} mb-1" ${details ? `onclick="toggleItineraryDay(${idx})"` : ''}>
+                            <div class="p-4">
+                                <div class="flex items-start justify-between mb-1">
+                                    <div class="text-xs text-gray-500">${item.city}</div>
+                                    <span class="badge ${item.type === 'base' ? 'badge-base' : 'badge-trip'}">${item.type === 'base' ? 'база' : 'выезд'}</span>
                                 </div>
-                                <h3 class="font-bold text-stone-900 text-base mb-1">${item.title}</h3>
-                                <p class="text-stone-600 text-xs leading-relaxed">${item.desc}</p>
+                                <div class="font-semibold text-gray-900 mb-1">${item.title}</div>
+                                <div class="text-sm text-gray-500">${item.desc}</div>
                                 
                                 ${details ? `
-                                    <div class="flex items-center justify-between mt-2 pt-2 border-t border-stone-100 text-xs text-stone-400">
+                                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400">
                                         <span>${details.distance}</span>
                                         <span class="flex items-center gap-1">
-                                            ${isExpanded ? 'Свернуть' : 'Подробнее'}
-                                            <svg class="w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                            </svg>
+                                            ${isExpanded ? '↑ Свернуть' : '↓ Подробнее'}
                                         </span>
                                     </div>
                                 ` : ''}
                             </div>
                             
                             ${isExpanded && details ? `
-                                <div class="border-t border-stone-200 bg-stone-50">
+                                <div class="border-t border-gray-100 bg-gray-50">
                                     ${details.items.map(spot => `
-                                        <div class="p-3 border-b border-stone-100 last:border-b-0 flex gap-3">
-                                            <div class="text-xl flex-shrink-0">${typeIcon(spot.type)}</div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="text-[10px] font-mono text-stone-400 mb-0.5">${spot.time}</div>
-                                                <div class="font-bold text-sm text-stone-900">${spot.title}</div>
-                                                <div class="text-xs text-stone-500 mt-0.5">${spot.desc}</div>
+                                        <div class="p-4 border-b border-gray-100 last:border-b-0 flex gap-3">
+                                            <div class="text-lg">${typeIcon(spot.type)}</div>
+                                            <div class="flex-1">
+                                                <div class="text-xs text-gray-400 mb-0.5">${spot.time}</div>
+                                                <div class="font-medium text-gray-900 text-sm">${spot.title}</div>
+                                                <div class="text-xs text-gray-500 mt-0.5">${spot.desc}</div>
                                                 ${spot.coords ? `
                                                     <a href="https://www.google.com/maps?q=${spot.coords[0]},${spot.coords[1]}" 
                                                        target="_blank" onclick="event.stopPropagation()"
-                                                       class="inline-flex items-center gap-1 text-[10px] text-blue-600 mt-1 hover:underline">
-                                                        📍 Открыть на карте
+                                                       class="inline-block text-xs text-blue-600 mt-1 hover:underline">
+                                                        → Карта
                                                     </a>
                                                 ` : ''}
                                             </div>
@@ -1473,7 +1145,7 @@
                 `;
             });
 
-            c.innerHTML = h + "</div>";
+            c.innerHTML = h + "</div></div>";
         }
 
         let expandedItineraryDays = {};
@@ -1485,11 +1157,11 @@
         function renderMap(c) {
             c.innerHTML = `
                 <div class="h-full flex flex-col space-y-4">
-                    <div class="bg-white p-3 rounded-xl border border-stone-200 shadow-sm">
+                    <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
                         <h2 class="font-bold text-lg">🗺️ Маршрут (General)</h2>
-                        <p class="text-xs text-stone-500">Четкая структура с базами. Наведите на маркеры для деталей.</p>
+                        <p class="text-xs text-gray-500">Четкая структура с базами. Наведите на маркеры для деталей.</p>
                     </div>
-                    <div id="map-container" class="flex-grow shadow-md border border-stone-300 relative"></div>
+                    <div id="map-container" class="flex-grow shadow-md border border-gray-300 relative"></div>
                 </div>
             `;
             loadYandexMap('map-container');
@@ -1531,10 +1203,10 @@
                     <!-- Header -->
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h2 class="text-2xl font-bold text-stone-900 mb-1">${route.name}</h2>
-                            <p class="text-sm text-stone-600">${route.desc}</p>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-1">${route.name}</h2>
+                            <p class="text-sm text-gray-600">${route.desc}</p>
                         </div>
-                        <button onclick="closeRouteDetail()" class="p-2 hover:bg-stone-100 rounded-full transition-colors">
+                        <button onclick="closeRouteDetail()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -1566,14 +1238,14 @@
                             </div>
 
                             <!-- Gradient -->
-                            <div class="bg-white border border-stone-200 rounded-lg p-4 mb-4">
-                                <h3 class="font-bold text-sm text-stone-900 mb-2">📈 Градиент</h3>
-                                <p class="text-sm text-stone-600">${route.gradient}</p>
+                            <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4">
+                                <h3 class="font-bold text-sm text-gray-900 mb-2">📈 Градиент</h3>
+                                <p class="text-sm text-gray-600">${route.gradient}</p>
                             </div>
 
                             <!-- Highlights -->
                             <div class="mb-4">
-                                <h3 class="font-bold text-sm text-stone-900 mb-2">✨ Особенности</h3>
+                                <h3 class="font-bold text-sm text-gray-900 mb-2">✨ Особенности</h3>
                                 <div class="flex flex-wrap gap-2">
                                     ${route.highlights.map(h => `<span class="tag-pill">${h}</span>`).join('')}
                                 </div>
@@ -1582,7 +1254,7 @@
 
                         <!-- Right Column: Map -->
                         <div class="flex flex-col">
-                            <div id="route-map-container" class="route-detail-map bg-stone-100 flex-1"></div>
+                            <div id="route-map-container" class="route-detail-map bg-gray-100 flex-1"></div>
                         </div>
                     </div>
 
@@ -1593,7 +1265,7 @@
                             Открыть в Google Maps
                         </a>
                         <button onclick="closeRouteDetail()"
-                                class="px-6 bg-stone-200 text-stone-700 font-bold rounded-lg hover:bg-stone-300 transition-colors">
+                                class="px-6 bg-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-300 transition-colors">
                             Закрыть
                         </button>
                     </div>
@@ -1708,9 +1380,9 @@
         function renderVelo(c) {
             let h = `
                 <div class="space-y-6 pb-20">
-                    <div class="bg-stone-50 border border-stone-200 p-4 rounded-xl">
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-xl">
                         <h2 class="font-bold text-lg mb-2">🚴 Общие Маршруты</h2>
-                        ${veloPlan.tips.map(t=>`<p class="text-xs text-stone-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}
+                        ${veloPlan.tips.map(t=>`<p class="text-xs text-gray-600 mb-1 border-l-2 border-red-500 pl-2">${t}</p>`).join('')}
                     </div>
             `;
 
@@ -1718,15 +1390,15 @@
                 h += `
                     <div class="rounded-xl overflow-hidden shadow-sm mb-4">
                         <div class="${g.color} p-3 font-bold text-sm">${g.name}</div>
-                        <div class="bg-white border-x border-b border-stone-200 p-4 space-y-3">
+                        <div class="bg-white border-x border-b border-gray-200 p-4 space-y-3">
                 `;
                 g.routes.forEach(r => h += `
                     <div class="card-hover p-2 rounded-lg cursor-pointer" onclick="showRouteDetailById('${r.id}')">
                         <div class="flex justify-between items-baseline">
-                            <h4 class="font-bold text-sm text-stone-800">${r.name}</h4>
+                            <h4 class="font-bold text-sm text-gray-800">${r.name}</h4>
                             <span class="badge ${r.badge}">${r.badge.split('-')[1].toUpperCase()}</span>
                         </div>
-                        <p class="text-xs text-stone-500 mt-1">${r.desc}</p>
+                        <p class="text-xs text-gray-500 mt-1">${r.desc}</p>
                     </div>
                 `);
                 h += `</div></div>`;
@@ -1738,12 +1410,12 @@
         function renderListWithTabs(c, data, sid, cb, rend, icon) {
             let h = `
                 <div class="flex flex-col md:flex-row gap-4 md:gap-6 h-full pb-20">
-                    <div class="sticky top-14 md:top-0 z-30 bg-[#fcfbf9] pt-2 pb-2 md:w-1/4">
+                    <div class="sticky top-14 md:top-0 z-30 bg-gray-50 pt-2 pb-2 md:w-1/4">
                         <div class="md:hidden flex overflow-x-auto hide-scroll gap-2 pb-1">
                             ${data.map(i=>`
                                 <button onclick="window.upSel('${i.id}')"
                                     class="flex-shrink-0 px-4 py-2 rounded-full border text-xs font-bold whitespace-nowrap transition-all ${
-                                        sid===i.id ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                                        sid===i.id ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                                     }">
                                     ${i.city}
                                 </button>
@@ -1753,7 +1425,7 @@
                             ${data.map(i=>`
                                 <button onclick="window.upSel('${i.id}')"
                                     class="text-left px-4 py-3 rounded-lg border transition-all ${
-                                        sid===i.id ? 'bg-stone-900 text-white' : 'bg-white text-stone-600 hover:bg-stone-50'
+                                        sid===i.id ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
                                     }">
                                     <span class="font-bold text-sm">${i.city}</span>
                                 </button>
@@ -1769,20 +1441,20 @@
 
         function renderSightsDetails(c, i) {
             return `
-                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
-                    <div class="bg-stone-100 p-4 border-b border-stone-200">
-                        <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
+                    <div class="bg-gray-100 p-4 border-b border-gray-200">
+                        <h2 class="text-2xl font-semibold text-gray-900 flex justify-between">
                             ${c.city} <span class="opacity-20">${i}</span>
                         </h2>
                     </div>
-                    <div class="divide-y divide-stone-100">
+                    <div class="divide-y divide-gray-100">
                         ${c.places.map(p=>`
                             <div class="p-4 card-hover">
                                 <div class="flex justify-between items-start mb-1">
-                                    <h3 class="font-bold text-base text-stone-900">${p.name}</h3>
+                                    <h3 class="font-bold text-base text-gray-900">${p.name}</h3>
                                     <span class="badge ${p.badge}">${p.type}</span>
                                 </div>
-                                <p class="text-stone-600 text-xs mb-2">${p.detail}</p>
+                                <p class="text-gray-600 text-xs mb-2">${p.detail}</p>
                                 <a href="https://yandex.ru/maps/?text=${encodeURIComponent(p.name + ' ' + c.city)}"
                                    target="_blank"
                                    class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded inline-block hover:bg-blue-100 transition-colors">
@@ -1797,22 +1469,22 @@
 
         function renderFoodDetails(c, i) {
             return `
-                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
-                    <div class="bg-stone-100 p-4 border-b border-stone-200">
-                        <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
+                    <div class="bg-gray-100 p-4 border-b border-gray-200">
+                        <h2 class="text-2xl font-semibold text-gray-900 flex justify-between">
                             ${c.city} <span class="opacity-20">${i}</span>
                         </h2>
                     </div>
-                    <div class="divide-y divide-stone-100">
+                    <div class="divide-y divide-gray-100">
                         ${c.places.map(p=>`
                             <div class="p-4 card-hover">
                                 <div class="flex justify-between items-start">
-                                    <h3 class="font-bold text-stone-900">${p.name}</h3>
-                                    <span class="text-xs bg-stone-100 px-2 py-0.5 rounded text-stone-600 font-bold">${safe(p.dish,'')}</span>
+                                    <h3 class="font-bold text-gray-900">${p.name}</h3>
+                                    <span class="text-xs bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-bold">${safe(p.dish,'')}</span>
                                 </div>
-                                ${p.why ? `<p class="text-stone-600 text-xs mt-1 italic mb-2">"${p.why}"</p>` : ``}
+                                ${p.why ? `<p class="text-gray-600 text-xs mt-1 italic mb-2">"${p.why}"</p>` : ``}
                                 ${p.tags?.length ? `<div class="flex flex-wrap gap-2 mb-2">${p.tags.map(t=>`<span class="tag-pill">${t}</span>`).join('')}</div>` : ``}
-                                ${p.url ? `<a href="${p.url}" target="_blank" class="text-[10px] text-stone-700 font-bold border border-stone-200 bg-stone-50 px-2 py-1 rounded inline-block mr-2 hover:bg-stone-100 transition-colors">🔗 Сайт</a>` : ``}
+                                ${p.url ? `<a href="${p.url}" target="_blank" class="text-[10px] text-gray-700 font-bold border border-gray-200 bg-gray-50 px-2 py-1 rounded inline-block mr-2 hover:bg-gray-100 transition-colors">🔗 Сайт</a>` : ``}
                                 <a href="https://yandex.ru/maps/?text=${encodeURIComponent(p.name+' '+c.city)}"
                                    target="_blank"
                                    class="text-[10px] text-blue-600 font-bold border border-blue-100 bg-blue-50 px-2 py-1 rounded inline-block hover:bg-blue-100 transition-colors">
@@ -1828,23 +1500,23 @@
         // TEMPORARILY DISABLED - Hotels tab
         // function renderHotelDetails(c, i) {
         //     return `
-        //         <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden fade-in">
-        //             <div class="bg-stone-100 p-4 border-b border-stone-200">
-        //                 <h2 class="text-2xl font-serif font-bold text-stone-900 flex justify-between">
+        //         <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
+        //             <div class="bg-gray-100 p-4 border-b border-gray-200">
+        //                 <h2 class="text-2xl font-semibold text-gray-900 flex justify-between">
         //                     ${c.city} <span class="opacity-20">${i}</span>
         //                 </h2>
-        //                 <p class="text-xs text-stone-600 mt-1 italic">${c.desc}</p>
+        //                 <p class="text-xs text-gray-600 mt-1 italic">${c.desc}</p>
         //             </div>
-        //             <div class="divide-y divide-stone-100">
+        //             <div class="divide-y divide-gray-100">
         //                 ${c.places.map(p=>`
         //                     <div class="p-4 card-hover">
         //                         <div class="flex justify-between items-start mb-1">
-        //                             <h3 class="font-bold text-stone-900">${p.name}</h3>
+        //                             <h3 class="font-bold text-gray-900">${p.name}</h3>
         //                             <span class="badge ${p.badge}">${p.type}</span>
         //                         </div>
-        //                         <p class="text-stone-600 text-xs mt-1 leading-relaxed">"${p.why}"</p>
+        //                         <p class="text-gray-600 text-xs mt-1 leading-relaxed">"${p.why}"</p>
         //                         <div class="flex justify-between items-center mt-3">
-        //                             <span class="text-xs font-mono text-stone-500 bg-stone-50 px-2 py-1 rounded">${p.price}</span>
+        //                             <span class="text-xs font-mono text-gray-500 bg-gray-50 px-2 py-1 rounded">${p.price}</span>
         //                             <a href="https://www.booking.com/searchresults.ru.html?ss=${encodeURIComponent(p.name + ' ' + c.city)}"
         //                                target="_blank"
         //                                class="text-[10px] text-white font-bold bg-blue-600 px-3 py-1.5 rounded hover:bg-blue-700 transition-colors shadow-sm">
@@ -1869,7 +1541,7 @@
                     return `
                         <div class="p-6 text-center">
                             <div class="text-4xl mb-3">🔍</div>
-                            <p class="text-stone-500 text-sm">Жильё пока не выбрано</p>
+                            <p class="text-gray-500 text-sm">Жильё пока не выбрано</p>
                             <a href="https://www.airbnb.ru/s/${encodeURIComponent(acc.city + ', Япония')}/homes" 
                                target="_blank"
                                class="inline-block mt-4 text-sm font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity shadow-md">
@@ -1884,27 +1556,27 @@
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-3">
                             <div>
-                                <h3 class="font-bold text-stone-900 text-lg">${b.name}</h3>
+                                <h3 class="font-bold text-gray-900 text-lg">${b.name}</h3>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="badge ${b.badge}">${b.type}</span>
                                     <span class="text-yellow-500 text-sm">★ ${b.rating}</span>
-                                    ${b.district ? `<span class="text-xs text-stone-400">📍 ${b.district}</span>` : ''}
+                                    ${b.district ? `<span class="text-xs text-gray-400">📍 ${b.district}</span>` : ''}
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Mini Map -->
-                        <div id="acc-map-${acc.id}" class="h-40 w-full rounded-lg mb-4 bg-stone-100 overflow-hidden"></div>
+                        <div id="acc-map-${acc.id}" class="h-40 w-full rounded-lg mb-4 bg-gray-100 overflow-hidden"></div>
                         
-                        <div class="grid grid-cols-3 gap-2 text-xs text-stone-600 mb-4">
-                            <div class="bg-stone-50 p-2 rounded text-center">
-                                <div class="font-bold text-stone-800">�️ ${b.rooms}</div>
+                        <div class="grid grid-cols-3 gap-2 text-xs text-gray-600 mb-4">
+                            <div class="bg-gray-50 p-2 rounded text-center">
+                                <div class="font-bold text-gray-800">�️ ${b.rooms}</div>
                             </div>
-                            <div class="bg-stone-50 p-2 rounded text-center">
-                                <div class="font-bold text-stone-800">�️ ${b.beds}</div>
+                            <div class="bg-gray-50 p-2 rounded text-center">
+                                <div class="font-bold text-gray-800">�️ ${b.beds}</div>
                             </div>
-                            <div class="bg-stone-50 p-2 rounded text-center">
-                                <div class="font-bold text-stone-800">🚿 ${b.bath}</div>
+                            <div class="bg-gray-50 p-2 rounded text-center">
+                                <div class="font-bold text-gray-800">🚿 ${b.bath}</div>
                             </div>
                         </div>
                         <a href="${b.link}" 
@@ -1919,22 +1591,22 @@
             el.innerHTML = `
                 <div class="space-y-4 pb-20">
                     <div class="text-center mb-6">
-                        <h1 class="text-2xl font-serif font-bold text-stone-900">🏠 Жильё</h1>
-                        <p class="text-sm text-stone-500 mt-1">Забронированные места для ночёвок</p>
+                        <h1 class="text-2xl font-semibold text-gray-900">🏠 Жильё</h1>
+                        <p class="text-sm text-gray-500 mt-1">Забронированные места для ночёвок</p>
                     </div>
                     
                     <div class="grid gap-4">
                         ${accommodations.map((acc, i) => `
-                            <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden card-hover fade-in">
-                                <div class="bg-stone-100 p-4 border-b border-stone-200">
+                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden card-hover fade-in">
+                                <div class="bg-gray-100 p-4 border-b border-gray-200">
                                     <div class="flex justify-between items-start">
                                         <div>
-                                            <h2 class="text-xl font-serif font-bold text-stone-900">${acc.city}</h2>
-                                            <p class="text-xs text-stone-500 mt-1">${acc.dates}</p>
+                                            <h2 class="text-xl font-semibold text-gray-900">${acc.city}</h2>
+                                            <p class="text-xs text-gray-500 mt-1">${acc.dates}</p>
                                         </div>
                                         ${statusBadge(acc.status)}
                                     </div>
-                                    <p class="text-xs text-stone-600 mt-2 italic">${acc.desc}</p>
+                                    <p class="text-xs text-gray-600 mt-2 italic">${acc.desc}</p>
                                 </div>
                                 ${renderBookingCard(acc, i)}
                             </div>
@@ -2051,8 +1723,8 @@
             el.innerHTML = `
                 <div class="space-y-4 pb-20">
                     <div class="text-center mb-4">
-                        <h1 class="text-2xl font-serif font-bold text-stone-900">📋 Детальный план</h1>
-                        <p class="text-sm text-stone-500 mt-1">Подробное расписание по дням</p>
+                        <h1 class="text-2xl font-semibold text-gray-900">📋 Детальный план</h1>
+                        <p class="text-sm text-gray-500 mt-1">Подробное расписание по дням</p>
                     </div>
 
                     <!-- City Tabs -->
@@ -2063,8 +1735,8 @@
                                 <button onclick="selectPlanCity('${cityId}')" 
                                     class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all ${
                                         selectedPlanCity === cityId 
-                                            ? 'bg-stone-900 text-white' 
-                                            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                                            ? 'bg-gray-900 text-white' 
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                     }">
                                     ${c.city}
                                 </button>
@@ -2073,7 +1745,7 @@
                     </div>
 
                     <!-- City Header -->
-                    <div class="bg-gradient-to-r from-rose-500 to-orange-500 rounded-xl p-4 text-white">
+                    <div class="bg-gray-900 rounded-xl p-4 text-white">
                         <h2 class="text-xl font-bold">${plan.city}</h2>
                         <p class="text-sm opacity-90">${plan.dates}</p>
                         <p class="text-xs mt-2 opacity-75">${plan.days.length} дней запланировано</p>
@@ -2084,35 +1756,35 @@
                         ${plan.days.map((day, dayIndex) => {
                             const isExpanded = expandedDays[`${selectedPlanCity}-${dayIndex}`];
                             return `
-                                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                                     <button onclick="togglePlanDay('${selectedPlanCity}', ${dayIndex})" 
-                                        class="w-full p-4 flex justify-between items-center hover:bg-stone-50 transition-colors">
+                                        class="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                                         <div class="text-left">
-                                            <div class="font-bold text-stone-900">${day.date}</div>
-                                            <div class="text-sm text-stone-600">${day.title}</div>
-                                            <div class="text-xs text-stone-400 mt-1">${day.distance}</div>
+                                            <div class="font-bold text-gray-900">${day.date}</div>
+                                            <div class="text-sm text-gray-600">${day.title}</div>
+                                            <div class="text-xs text-gray-400 mt-1">${day.distance}</div>
                                         </div>
-                                        <svg class="w-5 h-5 text-stone-400 transition-transform ${isExpanded ? 'rotate-180' : ''}" 
+                                        <svg class="w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}" 
                                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                         </svg>
                                     </button>
                                     
                                     ${isExpanded ? `
-                                        <div class="border-t border-stone-100 divide-y divide-stone-50">
+                                        <div class="border-t border-gray-100 divide-y divide-gray-50">
                                             ${day.items.map(item => `
-                                                <div class="p-4 hover:bg-stone-50 transition-colors">
+                                                <div class="p-4 hover:bg-gray-50 transition-colors">
                                                     <div class="flex gap-3">
                                                         <div class="text-2xl">${typeIcon(item.type)}</div>
                                                         <div class="flex-1">
                                                             <div class="flex items-start justify-between gap-2">
                                                                 <div>
-                                                                    <span class="text-xs text-stone-400 font-mono">${item.time}</span>
-                                                                    <h4 class="font-bold text-stone-900">${item.title}</h4>
+                                                                    <span class="text-xs text-gray-400 font-mono">${item.time}</span>
+                                                                    <h4 class="font-bold text-gray-900">${item.title}</h4>
                                                                 </div>
                                                                 <span class="badge ${typeBadge(item.type)} flex-shrink-0">${item.type}</span>
                                                             </div>
-                                                            <p class="text-sm text-stone-600 mt-1">${item.desc}</p>
+                                                            <p class="text-sm text-gray-600 mt-1">${item.desc}</p>
                                                             ${item.coords ? `
                                                                 <a href="https://www.google.com/maps?q=${item.coords[0]},${item.coords[1]}" 
                                                                    target="_blank"
@@ -2152,25 +1824,25 @@
         };
 
         function renderChecklistBlock() {
-            const urgent = (x) => x.urgent ? 'border-red-200 bg-red-50' : 'border-stone-200 bg-white';
+            const urgent = (x) => x.urgent ? 'border-red-200 bg-red-50' : 'border-gray-200 bg-white';
             return `
-                <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
-                    <div class="bg-stone-100 p-4 border-b border-stone-200">
-                        <h3 class="font-bold text-stone-900">✅ Чеклист</h3>
-                        <p class="text-xs text-stone-600 mt-1">Сохраняется локально в браузере</p>
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="bg-gray-100 p-4 border-b border-gray-200">
+                        <h3 class="font-bold text-gray-900">✅ Чеклист</h3>
+                        <p class="text-xs text-gray-600 mt-1">Сохраняется локально в браузере</p>
                     </div>
                     <div class="p-4 space-y-2">
                         ${checklist.map(item => `
                             <label class="flex items-center gap-3 p-3 rounded-lg border ${urgent(item)} cursor-pointer hover:shadow-sm transition-all card-hover">
                                 <input type="checkbox" ${item.done ? 'checked' : ''} data-id="${item.id}" class="w-4 h-4 cursor-pointer">
                                 <div class="flex-1">
-                                    <div class="font-bold text-sm ${item.done ? 'line-through text-stone-400' : 'text-stone-800'}">${item.text}</div>
-                                    ${item.note ? `<div class="text-xs text-stone-500 mt-1">${item.note}</div>` : ``}
+                                    <div class="font-bold text-sm ${item.done ? 'line-through text-gray-400' : 'text-gray-800'}">${item.text}</div>
+                                    ${item.note ? `<div class="text-xs text-gray-500 mt-1">${item.note}</div>` : ``}
                                 </div>
                                 ${item.urgent ? `<span class="badge badge-time badge-urgent">URGENT</span>` : ``}
                             </label>
                         `).join('')}
-                        <button id="add-check-item" class="w-full mt-2 text-sm font-bold bg-stone-900 text-white py-2 rounded-lg hover:bg-stone-800 transition-colors">
+                        <button id="add-check-item" class="w-full mt-2 text-sm font-bold bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">
                             + Добавить
                         </button>
                     </div>
@@ -2219,7 +1891,7 @@
             return `
                 <div class="space-y-3">
                     ${logisticsData.map(l=>`
-                        <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm card-hover">
+                        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm card-hover">
                             <h3 class="font-bold">${l.icon} ${l.title}</h3>
                             <p class="text-sm mt-1">${l.detail}</p>
                             ${l.vital?`<div class="mt-2 text-xs text-red-600 font-bold bg-red-50 p-2 rounded">${l.vital}</div>`:''}
