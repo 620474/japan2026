@@ -470,7 +470,6 @@
                         { name: "Y's Road Osaka Wear Kan", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Кансаи. Огромный выбор велоформы: Pearl Izumi, Assos, Rapha. Премиум-класс.", mapLink: "https://maps.app.goo.gl/YsRoadOsakaWear" },
                         { name: "Uemura Cycle Parts", type: "Дисконт", badge: "badge-casual", desc: "Огромный дисконт. Прошлые коллекции со скидками до 50%. Широкий выбор, есть примерочные.", mapLink: "https://maps.app.goo.gl/UemuraCycleParts" },
                         { name: "Silbest Cycle (Herbis Umeda)", type: "Бутик", badge: "badge-design", desc: "Престижный бутик. Bianchi, Pinarello, Trek, Castelli, Rapha. Байкфиттинг.", mapLink: "https://maps.app.goo.gl/SilbestCycle" },
-                        { name: "Rapha Cycling Club Osaka", type: "Бренд", badge: "badge-vibe", desc: "Официальный магазин Rapha. Только экипировка Rapha, лондонский стиль. Премиум.", mapLink: "https://maps.app.goo.gl/RaphaOsaka" },
                         { name: "Beckon (Honmachi)", type: "Спорт", badge: "badge-road", desc: "Крупный спортивный магазин. 150+ велосипедов, полный ассортимент одежды. One-stop shop.", mapLink: "https://maps.app.goo.gl/BeckonHonmachi" }
                     ]
                 },
@@ -501,7 +500,7 @@
                 {
                     city: "Хиросима",
                     places: [
-                        { name: "Nekomoto Futaba (Higashi-ku)", type: "Спорт", badge: "badge-road", desc: "Старейший магазин, фокус на Trek. Спортивная форма, японские и европейские бренды. Премиум качество.", mapLink: "https://maps.app.goo.gl/NekomotoFutaba" },
+                        { name: "Nekomoto TREK Bicycle Shop", type: "Спорт", badge: "badge-road", desc: "Старейший магазин, фокус на Trek. Спортивная форма, японские и европейские бренды. Премиум качество.", address: "2-7-13 Futabanosato, Higashi Ward", mapLink: "https://www.google.com/maps/place/Nekomoto+TREK+Bicycle+Shop/@34.4048,132.4789" },
                         { name: "Cycle Shop Grumpy (Nishi-ku)", type: "Вайб", badge: "badge-vibe", desc: "Магазин + кофе-бар (Dopey's Cafe). Surly, All-City, Cielo. Урбан/байкпэкинг стилистика. Особая атмосфера.", mapLink: "https://maps.app.goo.gl/GrumpyHiroshima" },
                         { name: "Kimura Jitensha", type: "Локал", badge: "badge-local", desc: "Локальный магазин. Ремонт, велосипеды, базовая экипировка. Pearl Izumi, Quoc.", mapLink: "https://maps.app.goo.gl/KimuraJitensha" },
                         { name: "Wish (Dream Hiroshima)", type: "Масс", badge: "badge-casual", desc: "Местная сеть. Базовая экипировка, демократичные цены. Стартовый комплект.", mapLink: "https://maps.app.goo.gl/WishHiroshima" }
@@ -1527,11 +1526,12 @@
                                 <h4 class="font-bold text-sm text-gray-800">${shop.name}</h4>
                                 <span class="badge ${shop.badge}">${shop.type}</span>
                             </div>
-                            <p class="text-xs text-gray-500 mb-2">${shop.desc}</p>
-                            <a href="https://www.google.com/maps/search/${encodeURIComponent(shop.name + ' ' + cityShops.city + ' Japan')}"
+                            <p class="text-xs text-gray-500 mb-1">${shop.desc}</p>
+                            ${shop.address ? `<p class="text-[10px] text-gray-400 mb-2">📍 ${shop.address}</p>` : ''}
+                            <a href="${shop.mapLink || 'https://www.google.com/maps/search/' + encodeURIComponent(shop.name + ' ' + cityShops.city + ' Japan')}"
                                target="_blank"
                                class="text-[10px] text-emerald-600 font-bold border border-emerald-100 bg-emerald-50 px-2 py-1 rounded inline-block hover:bg-emerald-100 transition-colors">
-                               📍 Google Maps
+                               🗺️ Карта
                             </a>
                         </div>
                     `;
