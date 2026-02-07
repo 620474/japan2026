@@ -194,6 +194,14 @@
             .tag-pill { background: #374151; color: #d1d5db; }
         }
 
+        .shop-hint {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 8px 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
         .fade-in {
             animation: fadeIn 0.2s ease-out;
         }
@@ -466,50 +474,52 @@
                 {
                     city: "Осака",
                     places: [
-                        { name: "Rapport Osaka", type: "Бутик", badge: "badge-design", desc: "Must-visit. Гравел/адвенчер/lifestyle. PAS Normal Studios, Polymer Workshop, Dyed in the Wool. Curated выбор, уникальные вещи.", mapLink: "https://maps.app.goo.gl/RapportOsaka" },
-                        { name: "Y's Road Osaka Wear Kan", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Кансаи. Огромный выбор велоформы: Pearl Izumi, Assos, Rapha. Премиум-класс.", mapLink: "https://maps.app.goo.gl/YsRoadOsakaWear" },
-                        { name: "Uemura Cycle Parts", type: "Дисконт", badge: "badge-casual", desc: "Огромный дисконт. Прошлые коллекции со скидками до 50%. Широкий выбор, есть примерочные.", mapLink: "https://maps.app.goo.gl/UemuraCycleParts" },
-                        { name: "Silbest Cycle (Herbis Umeda)", type: "Бутик", badge: "badge-design", desc: "Престижный бутик. Bianchi, Pinarello, Trek, Castelli, Rapha. Байкфиттинг.", mapLink: "https://maps.app.goo.gl/SilbestCycle" },
-                        { name: "Beckon (Honmachi)", type: "Спорт", badge: "badge-road", desc: "Крупный спортивный магазин. 150+ велосипедов, полный ассортимент одежды. One-stop shop.", mapLink: "https://maps.app.goo.gl/BeckonHonmachi" }
+                        { name: "Rapport Osaka", type: "Бутик", badge: "badge-design", desc: "Must-visit. Гравел/адвенчер/lifestyle. PAS Normal Studios, Polymer Workshop.", coords: [34.6789, 135.5012], mapLink: "https://maps.app.goo.gl/RapportOsaka" },
+                        { name: "Y's Road Osaka Wear Kan", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Кансаи. Pearl Izumi, Assos, Rapha. Премиум.", coords: [34.6842, 135.5058], mapLink: "https://maps.app.goo.gl/YsRoadOsakaWear" },
+                        { name: "Uemura Cycle Parts", type: "Дисконт", badge: "badge-casual", desc: "Огромный дисконт. Скидки до 50%. Широкий выбор.", coords: [34.7055, 135.4997], mapLink: "https://maps.app.goo.gl/UemuraCycleParts" },
+                        { name: "Silbest Cycle (Herbis Umeda)", type: "Бутик", badge: "badge-design", desc: "Престижный бутик. Bianchi, Pinarello, Trek, Castelli.", coords: [34.7005, 135.4945], mapLink: "https://maps.app.goo.gl/SilbestCycle" },
+                        { name: "TREK Bicycle Osaka Honmachi", type: "Trek", badge: "badge-tech", desc: "Официальный магазин Trek. Велосипеды и экипировка Bontrager.", coords: [34.6833, 135.5000], address: "Honmachi", mapLink: "https://www.trekbikes.com/us/en_US/store/97978/" },
+                        { name: "Beckon (Honmachi)", type: "Спорт", badge: "badge-road", desc: "150+ велосипедов, полный ассортимент одежды.", coords: [34.6820, 135.5020], mapLink: "https://maps.app.goo.gl/BeckonHonmachi" }
                     ]
                 },
                 {
                     city: "Киото",
                     places: [
-                        { name: "Y's Road Kyoto", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Киото. Сотни велосипедов, обширный выбор велокостюмов. Средние цены.", mapLink: "https://maps.app.goo.gl/YsRoadKyoto" },
-                        { name: "Cycle Shop Eirin (Marutamachi)", type: "Спорт", badge: "badge-casual", desc: "Крупная сеть. Шоссейники, гравийники, аксессуары. Концепт-отдел Cycle Hatena с одеждой для велотуризма.", mapLink: "https://maps.app.goo.gl/CycleShopEirin" },
-                        { name: "KON'S CYCLE", type: "Локал", badge: "badge-local", desc: "Местная сеть. Одежда на все сезоны, японские бренды. Умеренные цены.", mapLink: "https://maps.app.goo.gl/KonsCycleKyoto" }
+                        { name: "Y's Road Kyoto", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Киото. Сотни велосипедов, велокостюмы.", coords: [35.0050, 135.7590], mapLink: "https://maps.app.goo.gl/YsRoadKyoto" },
+                        { name: "Cycle Shop Eirin (Marutamachi)", type: "Спорт", badge: "badge-casual", desc: "Шоссейники, гравийники. Cycle Hatena — одежда для велотуризма.", coords: [35.0180, 135.7680], mapLink: "https://maps.app.goo.gl/CycleShopEirin" },
+                        { name: "KON'S CYCLE", type: "Локал", badge: "badge-local", desc: "Местная сеть. Японские бренды, умеренные цены.", coords: [34.9950, 135.7550], mapLink: "https://maps.app.goo.gl/KonsCycleKyoto" }
                     ]
                 },
                 {
                     city: "Фукуока",
                     places: [
-                        { name: "Y's Road Fukuoka Tenjin", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Кюсю. 300+ велосипедов, Cannondale, Trek, Bianchi. Pearl Izumi и зарубежные бренды.", mapLink: "https://maps.app.goo.gl/YsRoadFukuoka" },
-                        { name: "Uemura Cycle Parts Fukuoka", type: "Дисконт", badge: "badge-casual", desc: "Дисконт-филиал. Скидки на прошлые коллекции, широкий выбор базовой экипировки.", mapLink: "https://maps.app.goo.gl/UemuraFukuoka" },
-                        { name: "Giant Store Fukuoka", type: "Бренд", badge: "badge-tech", desc: "Флагман Giant/Liv. Фирменная экипировка, хорошо сидит на азиатских фигурах. Средние цены.", mapLink: "https://maps.app.goo.gl/GiantStoreFukuoka" }
+                        { name: "Y's Road Fukuoka Tenjin", type: "Сеть", badge: "badge-road", desc: "Крупнейший в Кюсю. 300+ велосипедов, Pearl Izumi.", coords: [33.5897, 130.3989], mapLink: "https://maps.app.goo.gl/YsRoadFukuoka" },
+                        { name: "Uemura Cycle Parts Fukuoka", type: "Дисконт", badge: "badge-casual", desc: "Дисконт-филиал. Скидки на прошлые коллекции.", coords: [33.5850, 130.4100], mapLink: "https://maps.app.goo.gl/UemuraFukuoka" },
+                        { name: "Giant Store Fukuoka", type: "Бренд", badge: "badge-tech", desc: "Флагман Giant/Liv. Фирменная экипировка.", coords: [33.5920, 130.3510], mapLink: "https://maps.app.goo.gl/GiantStoreFukuoka" }
                     ]
                 },
                 {
                     city: "Кобе",
                     places: [
-                        { name: "Y's Road Kobe", type: "Сеть", badge: "badge-road", desc: "Крупный магазин. Bianchi, Pinarello, Specialized. Pearl Izumi, Shimano, Gore-Tex. Вело-сервис.", mapLink: "https://maps.app.goo.gl/YsRoadKobe" },
-                        { name: "Cicli17 (Kitakyu Ward)", type: "Бутик", badge: "badge-design", desc: "Итальянский уклон. Европейские велосипеды и велоодежда. Авторские и редкие вещи.", mapLink: "https://maps.app.goo.gl/Cicli17Kobe" },
-                        { name: "Cycle Base Asahi Kobe", type: "Сеть", badge: "badge-casual", desc: "Крупная сеть. Разные сегменты, частые распродажи. Базовая экипировка.", mapLink: "https://maps.app.goo.gl/CycleBaseAsahiKobe" }
+                        { name: "Y's Road Kobe", type: "Сеть", badge: "badge-road", desc: "Bianchi, Pinarello, Specialized. Pearl Izumi, Shimano.", coords: [34.6950, 135.1980], mapLink: "https://maps.app.goo.gl/YsRoadKobe" },
+                        { name: "Rideworks (Trek Dealer)", type: "Trek", badge: "badge-tech", desc: "Официальный дилер Trek. Bontrager экипировка.", coords: [34.7180, 135.2650], address: "Motoyama-Nakamachi 2-1-32, Higashinada", mapLink: "https://www.trekbikes.com/sg/en_SG/store/437041/" },
+                        { name: "Cicli17", type: "Бутик", badge: "badge-design", desc: "Итальянский уклон. Авторские и редкие вещи.", coords: [34.7100, 135.2100], mapLink: "https://maps.app.goo.gl/Cicli17Kobe" },
+                        { name: "Cycle Base Asahi Kobe", type: "Сеть", badge: "badge-casual", desc: "Крупная сеть. Частые распродажи.", coords: [34.6900, 135.1850], mapLink: "https://maps.app.goo.gl/CycleBaseAsahiKobe" }
                     ]
                 },
                 {
                     city: "Хиросима",
                     places: [
-                        { name: "Nekomoto TREK Bicycle Shop", type: "Спорт", badge: "badge-road", desc: "Старейший магазин, фокус на Trek. Спортивная форма, японские и европейские бренды. Премиум качество.", address: "2-7-13 Futabanosato, Higashi Ward", mapLink: "https://www.google.com/maps/place/Nekomoto+TREK+Bicycle+Shop/@34.4048,132.4789" },
-                        { name: "Cycle Shop Grumpy (Nishi-ku)", type: "Вайб", badge: "badge-vibe", desc: "Магазин + кофе-бар (Dopey's Cafe). Surly, All-City, Cielo. Урбан/байкпэкинг стилистика. Особая атмосфера.", mapLink: "https://maps.app.goo.gl/GrumpyHiroshima" },
-                        { name: "Kimura Jitensha", type: "Локал", badge: "badge-local", desc: "Локальный магазин. Ремонт, велосипеды, базовая экипировка. Pearl Izumi, Quoc.", mapLink: "https://maps.app.goo.gl/KimuraJitensha" },
-                        { name: "Wish (Dream Hiroshima)", type: "Масс", badge: "badge-casual", desc: "Местная сеть. Базовая экипировка, демократичные цены. Стартовый комплект.", mapLink: "https://maps.app.goo.gl/WishHiroshima" }
+                        { name: "Nekomoto TREK Bicycle Shop", type: "Trek", badge: "badge-tech", desc: "Старейший магазин, фокус на Trek. Премиум качество.", coords: [34.4048, 132.4789], address: "2-7-13 Futabanosato, Higashi Ward", mapLink: "https://www.google.com/maps/place/Nekomoto+TREK+Bicycle+Shop/@34.4048,132.4789" },
+                        { name: "Cycle Shop Grumpy", type: "Вайб", badge: "badge-vibe", desc: "Магазин + кофе-бар. Surly, All-City. Особая атмосфера.", coords: [34.3950, 132.4350], mapLink: "https://maps.app.goo.gl/GrumpyHiroshima" },
+                        { name: "Kimura Jitensha", type: "Локал", badge: "badge-local", desc: "Ремонт, велосипеды, базовая экипировка.", coords: [34.3900, 132.4550], mapLink: "https://maps.app.goo.gl/KimuraJitensha" },
+                        { name: "Wish (Dream Hiroshima)", type: "Масс", badge: "badge-casual", desc: "Базовая экипировка, демократичные цены.", coords: [34.3850, 132.4600], mapLink: "https://maps.app.goo.gl/WishHiroshima" }
                     ]
                 },
                 {
                     city: "Ономити",
                     places: [
-                        { name: "ONOMICHI U2", type: "Комплекс", badge: "badge-design", desc: "Велокомплекс на старте Shimanami. Giant Store, отель, ресторан. Стильное место.", mapLink: "https://maps.app.goo.gl/OnomichiU2" }
+                        { name: "ONOMICHI U2 / Giant Store", type: "Комплекс", badge: "badge-design", desc: "Велокомплекс на старте Shimanami. Giant Store, отель.", coords: [34.4095, 133.2049], mapLink: "https://maps.app.goo.gl/OnomichiU2" }
                     ]
                 }
             ]
@@ -1504,58 +1514,166 @@
 
             h += `</div>`;
 
-            // Контент магазинов
+            // Контент магазинов с интерактивной картой
             h += `
                     <div id="velo-content-shops" class="${veloActiveTab === 'shops' ? '' : 'hidden'}">
                         <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl mb-4">
                             <h2 class="font-bold text-lg mb-2">🛍️ Магазины велоодежды</h2>
-                            <p class="text-xs text-gray-600 border-l-2 border-emerald-500 pl-2">Физические магазины с велоодеждой. Японские бренды, примерочные, скидки.</p>
+                            <p class="text-xs text-gray-600 border-l-2 border-emerald-500 pl-2">Наведите на магазин в списке — он подсветится на карте</p>
                         </div>
+                        
+                        <!-- Карта и список -->
+                        <div class="flex flex-col lg:flex-row gap-4">
+                            <!-- Карта -->
+                            <div class="lg:w-1/2">
+                                <div id="shops-map" class="w-full h-[400px] rounded-xl border border-gray-200 bg-gray-100"></div>
+                            </div>
+                            
+                            <!-- Список магазинов -->
+                            <div class="lg:w-1/2 max-h-[400px] overflow-y-auto hide-scroll space-y-3">
             `;
 
+            let shopIndex = 0;
             veloPlan.shops.forEach(cityShops => {
-                h += `
-                    <div class="rounded-xl overflow-hidden shadow-sm mb-4">
-                        <div class="bg-emerald-800 text-white p-3 font-bold text-sm">${cityShops.city}</div>
-                        <div class="bg-white border-x border-b border-gray-200 p-4 space-y-2">
-                `;
+                h += `<div class="mb-3">
+                    <h3 class="font-bold text-sm text-emerald-800 mb-2 sticky top-0 bg-gray-50 py-1">${cityShops.city}</h3>
+                    <div class="space-y-2">`;
                 cityShops.places.forEach(shop => {
                     h += `
-                        <div class="card-hover p-3 rounded-lg border border-gray-100">
-                            <div class="flex justify-between items-start mb-1">
+                        <div class="shop-item card-hover p-3 rounded-lg border border-gray-100 cursor-pointer transition-all"
+                             data-shop-index="${shopIndex}"
+                             data-coords="${shop.coords ? shop.coords.join(',') : ''}"
+                             onclick="selectShop(${shopIndex}, '${shop.mapLink || ''}', '${shop.name}', '${cityShops.city}')">                            <div class="flex justify-between items-start mb-1">
                                 <h4 class="font-bold text-sm text-gray-800">${shop.name}</h4>
                                 <span class="badge ${shop.badge}">${shop.type}</span>
                             </div>
-                            <p class="text-xs text-gray-500 mb-1">${shop.desc}</p>
-                            ${shop.address ? `<p class="text-[10px] text-gray-400 mb-2">📍 ${shop.address}</p>` : ''}
-                            <a href="${shop.mapLink || 'https://www.google.com/maps/search/' + encodeURIComponent(shop.name + ' ' + cityShops.city + ' Japan')}"
-                               target="_blank"
-                               class="text-[10px] text-emerald-600 font-bold border border-emerald-100 bg-emerald-50 px-2 py-1 rounded inline-block hover:bg-emerald-100 transition-colors">
-                               🗺️ Карта
-                            </a>
+                            <p class="text-xs text-gray-500">${shop.desc}</p>
+                            ${shop.address ? `<p class="text-[10px] text-gray-400 mt-1">📍 ${shop.address}</p>` : ''}
+                            <button onclick="event.stopPropagation(); openShopLink('${shop.mapLink || ''}', '${shop.name}', '${cityShops.city}')"
+                               class="mt-2 text-[10px] text-emerald-600 font-bold border border-emerald-100 bg-emerald-50 px-2 py-1 rounded inline-block hover:bg-emerald-100 transition-colors">
+                               🗺️ Google Maps
+                            </button>
                         </div>
                     `;
+                    shopIndex++;
                 });
                 h += `</div></div>`;
             });
 
-            // Японские бренды
             h += `
-                <div class="bg-white rounded-xl border border-gray-200 p-4">
-                    <h3 class="font-bold text-sm text-gray-700 mb-3">🇯🇵 Японские бренды (искать)</h3>
-                    <div class="space-y-2">
+                            </div>
+                        </div>
+                        
+                        <!-- Японские бренды -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-4 mt-4">
+                            <h3 class="font-bold text-sm text-gray-700 mb-3">🇯🇵 Японские бренды (искать)</h3>
+                            <div class="flex flex-wrap gap-2">
             `;
             japanBrands.forEach(b => {
-                h += `
-                    <div class="flex items-center gap-2">
-                        <span class="tag-pill">${b.name}</span>
-                        <span class="text-xs text-gray-500">${b.type} — ${b.desc}</span>
-                    </div>
-                `;
+                h += `<span class="tag-pill" title="${b.type} — ${b.desc}">${b.name}</span>`;
             });
             h += `</div></div></div>`;
 
             c.innerHTML = h + "</div>";
+            
+            // Инициализируем карту магазинов после рендера
+            if (veloActiveTab === 'shops') {
+                setTimeout(initShopsMap, 100);
+            }
+        }
+
+        let shopsMap = null;
+        let shopPlacemarks = [];
+
+        function initShopsMap() {
+            const mapContainer = document.getElementById('shops-map');
+            if (!mapContainer || shopsMap) return;
+
+            ymaps.ready(() => {
+                shopsMap = new ymaps.Map('shops-map', {
+                    center: [34.6937, 135.5023], // Осака по умолчанию
+                    zoom: 6,
+                    controls: ['zoomControl']
+                });
+
+                // Собираем все магазины с координатами
+                let idx = 0;
+                veloPlan.shops.forEach(cityShops => {
+                    cityShops.places.forEach(shop => {
+                        if (shop.coords) {
+                            const placemark = new ymaps.Placemark(shop.coords, {
+                                hintContent: `<div style="padding:4px;max-width:200px">
+                                    <strong>${shop.name}</strong><br>
+                                    <small style="color:#059669">${shop.type} • ${cityShops.city}</small><br>
+                                    <span style="font-size:11px;color:#666">${shop.desc}</span>
+                                    ${shop.address ? `<br><span style="font-size:10px;color:#999">📍 ${shop.address}</span>` : ''}
+                                </div>`,
+                                balloonContent: `<strong>${shop.name}</strong><br><small>${shop.type} • ${cityShops.city}</small><br><span style="font-size:11px">${shop.desc}</span>`
+                            }, {
+                                preset: 'islands#greenDotIcon',
+                                iconColor: '#059669',
+                                hintLayout: ymaps.templateLayoutFactory.createClass('<div class="shop-hint">$[properties.hintContent]</div>')
+                            });
+                            placemark.shopIndex = idx;
+                            shopsMap.geoObjects.add(placemark);
+                            shopPlacemarks.push(placemark);
+                        }
+                        idx++;
+                    });
+                });
+
+                // Автоматически подстраиваем зум под все метки
+                if (shopPlacemarks.length > 0) {
+                    shopsMap.setBounds(shopsMap.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 30 });
+                }
+            });
+        }
+
+        let selectedShopIndex = -1;
+
+        function selectShop(index, mapLink, name, city) {
+            // Снимаем выделение с предыдущего
+            if (selectedShopIndex >= 0) {
+                unhighlightShop(selectedShopIndex);
+            }
+            
+            // Выделяем новый
+            selectedShopIndex = index;
+            highlightShop(index);
+        }
+
+        function highlightShop(index) {
+            const item = document.querySelector(`[data-shop-index="${index}"]`);
+            if (item) {
+                item.classList.add('bg-emerald-50', 'border-emerald-300');
+            }
+            
+            // Подсвечиваем метку на карте
+            const placemark = shopPlacemarks.find(p => p.shopIndex === index);
+            if (placemark && shopsMap) {
+                placemark.options.set('iconColor', '#dc2626');
+                placemark.options.set('preset', 'islands#redDotIcon');
+                shopsMap.setCenter(placemark.geometry.getCoordinates(), 12, { duration: 300 });
+            }
+        }
+
+        function unhighlightShop(index) {
+            const item = document.querySelector(`[data-shop-index="${index}"]`);
+            if (item) {
+                item.classList.remove('bg-emerald-50', 'border-emerald-300');
+            }
+            
+            // Возвращаем цвет метки
+            const placemark = shopPlacemarks.find(p => p.shopIndex === index);
+            if (placemark) {
+                placemark.options.set('iconColor', '#059669');
+                placemark.options.set('preset', 'islands#greenDotIcon');
+            }
+        }
+
+        function openShopLink(mapLink, name, city) {
+            const url = mapLink || `https://www.google.com/maps/search/${encodeURIComponent(name + ' ' + city + ' Japan')}`;
+            window.open(url, '_blank');
         }
 
         function switchVeloTab(tab) {
@@ -1568,6 +1686,13 @@
             // Показываем/скрываем контент
             document.getElementById('velo-content-routes').className = tab === 'routes' ? '' : 'hidden';
             document.getElementById('velo-content-shops').className = tab === 'shops' ? '' : 'hidden';
+            
+            // Инициализируем карту при переключении на магазины
+            if (tab === 'shops') {
+                shopsMap = null;
+                shopPlacemarks = [];
+                setTimeout(initShopsMap, 100);
+            }
         }
 
         function renderListWithTabs(c, data, sid, cb, rend, icon) {
